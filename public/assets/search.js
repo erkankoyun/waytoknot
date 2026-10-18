@@ -2,9 +2,9 @@
   'use strict';
   const labels = { bridal: 'Bridal wear', venue: 'Venue', photography: 'Photography', catering: 'Catering', florist: 'Florist' };
   document.addEventListener('DOMContentLoaded', function () {
-    const intro = document.querySelector('.solr-search-intro-layout');
-    const layout = document.querySelector('.solr-search-layout');
-    const column = document.querySelector('.solr-search-layout__main');
+    const intro = document.querySelector('.wk-search-home');
+    const layout = document.querySelector('.wk-search-results');
+    const column = document.querySelector('.wk-search-results');
     if (!intro || !layout || !column) return;
     const oldResults = column.querySelector('.tx-solr-search-results-plugin');
     const results = document.createElement('section');
@@ -38,7 +38,8 @@
         oldResults.classList.remove('tx-solr-search--initial', 'tx-solr-no-results');
         oldResults.classList.add('tx-solr-search--results');
       }
-      intro.style.display='none'; layout.style.display='';
+      document.body.classList.add('wk-has-results'); layout.hidden=false;
+      document.querySelectorAll('.gc-suggestions').forEach(node=>{node.hidden=true;});
       results.replaceChildren(el('p','gc-search-status','Searching vendors…'));
       results.setAttribute('aria-busy','true');
       if (controller) controller.abort(); controller = new AbortController();
@@ -103,7 +104,15 @@
       input.addEventListener('keydown',e=>{if(e.key==='Escape')suggestions.hidden=true;});
       form.addEventListener('focusout',()=>setTimeout(()=>{if(!form.contains(document.activeElement))suggestions.hidden=true;},150));
     });
-    window.addEventListener('popstate',()=>{state=new URLSearchParams(location.search);run();});
+    window.addEventListener('popstate',()=>{
+      state=new URLSearchParams(location.search);
+      if(state.has('q')||state.has('city')||state.has('category'))run();
+      else {
+        if(controller)controller.abort();
+        document.body.classList.remove('wk-has-results');layout.hidden=true;results.replaceChildren();
+        forms.forEach(form=>{form.querySelector('[name="q"]').value='';});
+      }
+    });
     if(state.has('q')||state.has('city')||state.has('category'))run();
   });
 })();
