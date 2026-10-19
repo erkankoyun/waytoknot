@@ -1,0 +1,15 @@
+{
+  // Copy to wrangler.jsonc only AFTER provisioning a dedicated D1 database.
+  // Never use the Sites database placeholder ID.
+  "name": "waytoknot-staging",
+  "main": "./build/sites-worker.ts",
+  "compatibility_date": "2026-10-19",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "waytoknot-staging",
+      "database_id": "REPLACE_WITH_REAL_D1_DATABASE_ID"
+    }
+  ]
+}
