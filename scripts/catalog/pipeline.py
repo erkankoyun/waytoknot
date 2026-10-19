@@ -55,7 +55,9 @@ def ingest(db,path,manual=False):
   try:
    row=json.loads(line);v=candidate(row)
    if not v:rejected+=1;continue
-   if manual:v['verification']='manual';v['checkedAt']=TODAY()
+   if manual:
+    v['verification']='manual'
+    if not v.get('checkedAt'):v['checkedAt']=TODAY()
    status='approved' if manual else 'pending'
    result=db.execute('INSERT OR IGNORE INTO queue(key,payload,status,updated_at) VALUES(?,?,?,?)',(key(v),json.dumps(v,ensure_ascii=False),status,TODAY()))
    accepted+=result.rowcount;duplicates+=1-result.rowcount
