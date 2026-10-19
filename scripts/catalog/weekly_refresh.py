@@ -30,7 +30,7 @@ def refresh(db, limit):
         if status == 'approved':
             # Verification confirms website accessibility, not wedding service availability.
             current_site = checked.get('verificationUrl')
-            difference = previous_site is not None and previous_site != current_site
+            difference = (previous_site is not None and previous_site != current_site) or (value.get('contentDigest') is not None and value.get('contentDigest') != checked.get('contentDigest'))
             # A first successful refresh updates the timestamp; metadata change detection is conservative.
             if difference or any(before[k] != checked.get(k) for k in before):
                 counts['changed'] += 1
