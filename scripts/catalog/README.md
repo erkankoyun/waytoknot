@@ -53,3 +53,11 @@ Explicit owner-authorized candidate publication: `python scripts/catalog/pipelin
 ## 2026-10-19 category expansion
 
 `data/2026-10-19-category-expansion.jsonl` contains 880 additional US business listings: 20 in each of the 44 categories, deduplicated against the existing 969 listings. Official business pages and official supplier stockist/location pages are recorded as source URLs. Some records are separate branches of the same brand. City coordinates approximate a city or advertised service area, not an exact storefront. No full-site verification or wedding availability is claimed; all entries retain an empty review date and an unverified publication flag. `data/2026-10-19-coverage-report.json` records the production category counts after import.
+
+## Weekly automation (GitHub Actions)
+
+The workflow `.github/workflows/weekly-catalog-refresh.yml` schedules a run every Monday at 09:17 UTC and offers manual runs. It restores its crawl queue checkpoint from the Actions cache, rechecks up to 250 previously approved websites and up to 100 new candidates, compares SHA-256 page content digests, and syncs approved rows to the live directory through the authenticated catalog importer. Any inaccessible pages or changed contents still need human review for semantic/business details; successful HTTP fetches do not prove pricing or wedding services. An approved record is never deleted because of a temporary retrieval failure.
+
+To enable live database writes, add a GitHub Actions secret named `CATALOG_IMPORT_TOKEN` (matching the Sites runtime secret) and a repository variable `CATALOG_SITE_ORIGIN` (the actual HTTPS site origin serving the import API). If Sites requires an access bearer, also set `SITES_ACCESS_BEARER` as a secret. Without these, the workflow runs local checks but skips live synchronization. No tokens are committed to the repository.
+
+The Actions cache is a convenience checkpoint, not a permanent durable database. On cache loss, the queue bootstraps from `data/2026-10-19-category-expansion.jsonl` as pending candidates; previously approved websites would need to be rechecked before publication. Automated discovery beyond those seed candidates requires a separate configured source or feed.
