@@ -1,6 +1,6 @@
 # Business discovery and review
 
-This is an ingestion pipeline, not a claim that 100,000 sites have been checked. Discovery records are candidates. Only reviewed records are published.
+This is an ingestion pipeline, not a claim that 100,000 sites have been checked. Discovery records are candidates. The default import keeps unreviewed candidates private; explicit owner-authorized publication labels them as unverified.
 
 ## Open-data discovery
 
@@ -49,3 +49,7 @@ The category taxonomy lives in `public/assets/wedding-categories.json`. Add cate
 Check crawl totals with the queue status command and public import totals at `/api/catalog/status`. Local test coverage includes a separate in-memory set of 100,000 **synthetic test records**, which must never be imported into production.
 
 Explicit owner-authorized candidate publication: `python scripts/catalog/pipeline.py sync https://SITE-ORIGIN --publish-unverified`. These rows use `listed` status and show “Website not yet verified”; no review date or verification is invented. Default sync still stages candidates privately.
+
+## 2026-10-19 category expansion
+
+`data/2026-10-19-category-expansion.jsonl` contains 880 additional US business listings: 20 in each of the 44 categories, deduplicated against the existing 969 listings. Official business pages and official supplier stockist/location pages are recorded as source URLs. Some records are separate branches of the same brand. City coordinates approximate a city or advertised service area, not an exact storefront. No full-site verification or wedding availability is claimed; all entries retain an empty review date and an unverified publication flag. `data/2026-10-19-coverage-report.json` records the production category counts after import.

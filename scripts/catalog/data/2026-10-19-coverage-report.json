@@ -1,0 +1,317 @@
+{
+  "date": "2026-10-19",
+  "published": 1849,
+  "new_records": 880,
+  "categories_checked": 44,
+  "all_categories_passed": true,
+  "categories": {
+    "venue": {
+      "before": 8,
+      "added": 20,
+      "total": 28,
+      "expected": 28,
+      "passed": true
+    },
+    "planner": {
+      "before": 108,
+      "added": 20,
+      "total": 128,
+      "expected": 128,
+      "passed": true
+    },
+    "officiant": {
+      "before": 1,
+      "added": 20,
+      "total": 21,
+      "expected": 21,
+      "passed": true
+    },
+    "catering": {
+      "before": 2,
+      "added": 20,
+      "total": 22,
+      "expected": 22,
+      "passed": true
+    },
+    "cake": {
+      "before": 73,
+      "added": 20,
+      "total": 93,
+      "expected": 93,
+      "passed": true
+    },
+    "sweets": {
+      "before": 0,
+      "added": 20,
+      "total": 20,
+      "expected": 20,
+      "passed": true
+    },
+    "barservice": {
+      "before": 0,
+      "added": 20,
+      "total": 20,
+      "expected": 20,
+      "passed": true
+    },
+    "foodtruck": {
+      "before": 0,
+      "added": 20,
+      "total": 20,
+      "expected": 20,
+      "passed": true
+    },
+    "bridal": {
+      "before": 29,
+      "added": 20,
+      "total": 49,
+      "expected": 49,
+      "passed": true
+    },
+    "groom": {
+      "before": 15,
+      "added": 20,
+      "total": 35,
+      "expected": 35,
+      "passed": true
+    },
+    "formalwear": {
+      "before": 0,
+      "added": 20,
+      "total": 20,
+      "expected": 20,
+      "passed": true
+    },
+    "alterations": {
+      "before": 1,
+      "added": 20,
+      "total": 21,
+      "expected": 21,
+      "passed": true
+    },
+    "shoes": {
+      "before": 0,
+      "added": 20,
+      "total": 20,
+      "expected": 20,
+      "passed": true
+    },
+    "accessories": {
+      "before": 0,
+      "added": 20,
+      "total": 20,
+      "expected": 20,
+      "passed": true
+    },
+    "jeweler": {
+      "before": 65,
+      "added": 20,
+      "total": 85,
+      "expected": 85,
+      "passed": true
+    },
+    "gifts": {
+      "before": 39,
+      "added": 20,
+      "total": 59,
+      "expected": 59,
+      "passed": true
+    },
+    "favors": {
+      "before": 0,
+      "added": 20,
+      "total": 20,
+      "expected": 20,
+      "passed": true
+    },
+    "barber": {
+      "before": 76,
+      "added": 20,
+      "total": 96,
+      "expected": 96,
+      "passed": true
+    },
+    "hairsalon": {
+      "before": 201,
+      "added": 20,
+      "total": 221,
+      "expected": 221,
+      "passed": true
+    },
+    "makeup": {
+      "before": 0,
+      "added": 20,
+      "total": 20,
+      "expected": 20,
+      "passed": true
+    },
+    "beauty": {
+      "before": 166,
+      "added": 20,
+      "total": 186,
+      "expected": 186,
+      "passed": true
+    },
+    "nails": {
+      "before": 83,
+      "added": 20,
+      "total": 103,
+      "expected": 103,
+      "passed": true
+    },
+    "spa": {
+      "before": 0,
+      "added": 20,
+      "total": 20,
+      "expected": 20,
+      "passed": true
+    },
+    "photography": {
+      "before": 53,
+      "added": 20,
+      "total": 73,
+      "expected": 73,
+      "passed": true
+    },
+    "videography": {
+      "before": 1,
+      "added": 20,
+      "total": 21,
+      "expected": 21,
+      "passed": true
+    },
+    "photobooth": {
+      "before": 1,
+      "added": 20,
+      "total": 21,
+      "expected": 21,
+      "passed": true
+    },
+    "dj": {
+      "before": 2,
+      "added": 20,
+      "total": 22,
+      "expected": 22,
+      "passed": true
+    },
+    "band": {
+      "before": 0,
+      "added": 20,
+      "total": 20,
+      "expected": 20,
+      "passed": true
+    },
+    "entertainment": {
+      "before": 0,
+      "added": 20,
+      "total": 20,
+      "expected": 20,
+      "passed": true
+    },
+    "florist": {
+      "before": 33,
+      "added": 20,
+      "total": 53,
+      "expected": 53,
+      "passed": true
+    },
+    "decor": {
+      "before": 0,
+      "added": 20,
+      "total": 20,
+      "expected": 20,
+      "passed": true
+    },
+    "rental": {
+      "before": 10,
+      "added": 20,
+      "total": 30,
+      "expected": 30,
+      "passed": true
+    },
+    "lighting": {
+      "before": 0,
+      "added": 20,
+      "total": 20,
+      "expected": 20,
+      "passed": true
+    },
+    "stationery": {
+      "before": 1,
+      "added": 20,
+      "total": 21,
+      "expected": 21,
+      "passed": true
+    },
+    "signage": {
+      "before": 0,
+      "added": 20,
+      "total": 20,
+      "expected": 20,
+      "passed": true
+    },
+    "transportation": {
+      "before": 1,
+      "added": 20,
+      "total": 21,
+      "expected": 21,
+      "passed": true
+    },
+    "hotel": {
+      "before": 0,
+      "added": 20,
+      "total": 20,
+      "expected": 20,
+      "passed": true
+    },
+    "travel": {
+      "before": 0,
+      "added": 20,
+      "total": 20,
+      "expected": 20,
+      "passed": true
+    },
+    "dance": {
+      "before": 0,
+      "added": 20,
+      "total": 20,
+      "expected": 20,
+      "passed": true
+    },
+    "childcare": {
+      "before": 0,
+      "added": 20,
+      "total": 20,
+      "expected": 20,
+      "passed": true
+    },
+    "petcare": {
+      "before": 0,
+      "added": 20,
+      "total": 20,
+      "expected": 20,
+      "passed": true
+    },
+    "eventstaff": {
+      "before": 0,
+      "added": 20,
+      "total": 20,
+      "expected": 20,
+      "passed": true
+    },
+    "security": {
+      "before": 0,
+      "added": 20,
+      "total": 20,
+      "expected": 20,
+      "passed": true
+    },
+    "cleaning": {
+      "before": 0,
+      "added": 20,
+      "total": 20,
+      "expected": 20,
+      "passed": true
+    }
+  }
+}
