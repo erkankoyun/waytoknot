@@ -1,0 +1,49 @@
+name: Weekly vendor website refresh
+on:
+  schedule:
+    - cron: '17 9 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: weekly-catalog-refresh
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      CATALOG_IMPORT_TOKEN: ${{ secrets.CATALOG_IMPORT_TOKEN }}
+      CATALOG_SITE_ORIGIN: ${{ vars.CATALOG_SITE_ORIGIN }}
+      SITES_ACCESS_BEARER: ${{ secrets.SITES_ACCESS_BEARER }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Recover previous review checkpoint
+        uses: actions/cache/restore@v4
+        with:
+          path: .catalog-work/queue.sqlite
+          key: catalog-queue-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            catalog-queue-
+      - name: Refresh and compare websites
+        run: python scripts/catalog/weekly_refresh.py --limit 250 --new-limit 100
+      - name: Publish reviewed records to D1
+        if: ${{ env.CATALOG_IMPORT_TOKEN != '' && env.CATALOG_SITE_ORIGIN != '' }}
+        run: python scripts/catalog/pipeline.py sync "$CATALOG_SITE_ORIGIN"
+      - name: Save current checkpoint
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .catalog-work/queue.sqlite
+          key: catalog-queue-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Job summary
+        if: always()
+        run: |
+          echo '## Catalog refresh' >> "$GITHUB_STEP_SUMMARY"
+          python scripts/catalog/pipeline.py status >> "$GITHUB_STEP_SUMMARY"
+          if [ -z "$CATALOG_IMPORT_TOKEN" ] || [ -z "$CATALOG_SITE_ORIGIN" ]; then
+            echo 'D1 sync skipped: set repository secret CATALOG_IMPORT_TOKEN and variable CATALOG_SITE_ORIGIN.' >> "$GITHUB_STEP_SUMMARY"
+          fi
