@@ -92,3 +92,10 @@ img,video{height:auto}
  .wk-search-bar{gap:6px;padding-left:12px}
  .wk-search-bar button[type=submit]{padding:12px 13px}
 }
+
+.gc-search-explanation{font-size:14px;line-height:1.7;color:#605574;background:#faf7fc;border-radius:10px;padding:12px 16px;overflow-wrap:anywhere}
+.gc-query-chip{border:1px solid #dcd9e9;border-radius:24px;padding:9px 14px;background:#fff;color:#30345c;margin:0 8px 12px 0;font-size:14px;max-width:100%;white-space:normal;text-align:left}
+.gc-query-chip:hover,.gc-query-chip:focus-visible{background:#f5f2fa}
+.gc-source-note{font-size:11px;line-height:1.6;color:#7b8290;margin-top:14px}
+.gc-source-note a{color:#596288;text-decoration:underline}
+.wk-search-page .gc-suggestions button:focus{background:#f2f1fa;outline:2px solid #837bc2;outline-offset:-2px}

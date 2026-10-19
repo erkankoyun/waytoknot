@@ -9,7 +9,7 @@ import { answerQuestion, questions, budgetRows, createProfile, guideReply, money
 import { createPlanPdf } from "../lib/pdf";
 
 test("US search handles English and Turkish queries, filters, paging, and real empty results",()=>{
-  assert.equal(vendors.length,28);
+  assert.ok(vendors.length>=48);
   const result=searchVendors("NEW YORK BRIDAL");
   assert.equal(searchVendors("NEW YORK GELİNLİK").total,result.total);
   assert.ok(result.total>=2);
@@ -18,7 +18,7 @@ test("US search handles English and Turkish queries, filters, paging, and real e
   assert.ok(searchVendors("Saratoga mekan").results.some(v=>v.name==="Hall of Springs"));
   assert.ok(searchVendors("", "photography").results.every(v=>v.category==="photography"));
   assert.equal(searchVendors("olmayanfirma12345").total,0);
-  assert.equal(searchVendors("", "", "",999).page,3);
+  assert.equal(searchVendors("", "", "",999).page,Math.ceil(vendors.length/10));
   assert.ok(vendors.every(v=>new URL(v.url).protocol==="https:"));
 });
 test("USD parsing handles separators and rejects negative inputs",()=>{

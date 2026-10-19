@@ -1,9 +1,9 @@
 window.addEventListener('load',async function(){
   const host=document.querySelector('.gelincicegi-map-app');if(!host)return;
   const list=document.getElementById('gelincicegi-placesList');
-  const labels={bridal:'Bridal wear',venue:'Venue',photography:'Photography',catering:'Catering',florist:'Florist'};
+  let labels={bridal:'Bridal wear',venue:'Venue',photography:'Photography',catering:'Catering',florist:'Florist'};
   try{
-    const r=await fetch('/api/search');if(!r.ok)throw new Error();const first=await r.json();let vendors=first.results;
+    const r=await fetch('/api/search');if(!r.ok)throw new Error();const first=await r.json();labels=first.category_labels||labels;let vendors=first.results;
     for(let page=2;page<=first.pages;page++){const next=await fetch('/api/search?page='+page);if(next.ok)vendors=vendors.concat((await next.json()).results);}
     const map=new maplibregl.Map({container:'gelincicegi-map',style:'https://tiles.openfreemap.org/styles/bright',center:[-98.58,39.83],zoom:3});
     map.addControl(new maplibregl.NavigationControl(),'top-right');

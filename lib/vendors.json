@@ -604,5 +604,456 @@
     ],
     "source": "https://www.winstonflowers.com/weddings-and-events/weddings",
     "checkedAt": "2026-10-17"
+  },
+  {
+    "id": "the-state-room",
+    "name": "The State Room",
+    "category": "venue",
+    "city": "Albany",
+    "state": "NY",
+    "url": "https://thestateroomalbany.com/",
+    "description": "Historic wedding and reception venue in downtown Albany.",
+    "keywords": [
+      "venue",
+      "Albany",
+      "wedding"
+    ],
+    "coords": [
+      42.6526,
+      -73.7562
+    ],
+    "source": "https://thestateroomalbany.com/",
+    "checkedAt": "2026-10-19",
+    "tags": [],
+    "locationKind": "city"
+  },
+  {
+    "id": "birch-hill-estate",
+    "name": "Birch Hill Estate",
+    "category": "venue",
+    "city": "Castleton-on-Hudson",
+    "state": "NY",
+    "url": "https://birchhillcatering.com/birch-hill-estate/",
+    "description": "Wedding estate with indoor ballrooms, outdoor pavilions and tented grounds.",
+    "keywords": [
+      "venue",
+      "Castleton-on-Hudson",
+      "wedding",
+      "outdoor",
+      "indoor",
+      "garden",
+      "rustic",
+      "barn"
+    ],
+    "coords": [
+      42.4684,
+      -73.7512
+    ],
+    "source": "https://birchhillcatering.com/birch-hill-estate/",
+    "checkedAt": "2026-10-19",
+    "tags": [
+      "outdoor",
+      "indoor",
+      "garden",
+      "rustic",
+      "barn"
+    ],
+    "locationKind": "city"
+  },
+  {
+    "id": "conway-entertainment",
+    "name": "Conway Entertainment",
+    "category": "dj",
+    "city": "Albany",
+    "state": "NY",
+    "url": "https://www.conwayentertainment.com/weddings",
+    "description": "Wedding DJ, MC, ceremony audio and lighting services for the Albany area.",
+    "keywords": [
+      "dj",
+      "Albany",
+      "wedding"
+    ],
+    "coords": [
+      42.6526,
+      -73.7562
+    ],
+    "source": "https://www.conwayentertainment.com/weddings",
+    "checkedAt": "2026-10-19",
+    "tags": [],
+    "locationKind": "service-area"
+  },
+  {
+    "id": "nwn-entertainment",
+    "name": "NWN Entertainment",
+    "category": "dj",
+    "city": "Albany",
+    "state": "NY",
+    "url": "https://nwnentertainment.com/",
+    "description": "Wedding DJ and entertainment services for Albany, Saratoga and the Capital Region.",
+    "keywords": [
+      "dj",
+      "Albany",
+      "wedding"
+    ],
+    "coords": [
+      42.6526,
+      -73.7562
+    ],
+    "source": "https://nwnentertainment.com/",
+    "checkedAt": "2026-10-19",
+    "tags": [],
+    "locationKind": "service-area"
+  },
+  {
+    "id": "coccadotts",
+    "name": "Coccadotts Cake Shop",
+    "category": "cake",
+    "city": "Albany",
+    "state": "NY",
+    "url": "https://www.coccadotts.com/",
+    "description": "Custom wedding cakes made through the Albany location.",
+    "keywords": [
+      "cake",
+      "Albany",
+      "wedding"
+    ],
+    "coords": [
+      42.6526,
+      -73.7562
+    ],
+    "source": "https://www.coccadotts.com/",
+    "checkedAt": "2026-10-19",
+    "tags": [],
+    "locationKind": "city"
+  },
+  {
+    "id": "villa-italia",
+    "name": "Villa Italia Bakery",
+    "category": "cake",
+    "city": "Schenectady",
+    "state": "NY",
+    "url": "https://www.villaitaliabakery.com/wedding-cakes/",
+    "description": "Custom wedding cakes from a Capital Region bakery.",
+    "keywords": [
+      "cake",
+      "Schenectady",
+      "wedding"
+    ],
+    "coords": [
+      42.8142,
+      -73.9396
+    ],
+    "source": "https://www.villaitaliabakery.com/wedding-cakes/",
+    "checkedAt": "2026-10-19",
+    "tags": [],
+    "locationKind": "city"
+  },
+  {
+    "id": "true-beauty-company",
+    "name": "True Beauty Company",
+    "category": "beauty",
+    "city": "Saratoga Springs",
+    "state": "NY",
+    "url": "https://www.truebeautycompany.com/",
+    "description": "On-location wedding hair styling and makeup services in Upstate New York.",
+    "keywords": [
+      "beauty",
+      "Saratoga Springs",
+      "wedding"
+    ],
+    "coords": [
+      43.0831,
+      -73.7852
+    ],
+    "source": "https://www.truebeautycompany.com/",
+    "checkedAt": "2026-10-19",
+    "tags": [],
+    "locationKind": "service-area"
+  },
+  {
+    "id": "katie-o-events",
+    "name": "Katie O’ Weddings & Events",
+    "category": "planner",
+    "city": "Albany",
+    "state": "NY",
+    "url": "https://www.katieoevents.com/",
+    "description": "Wedding and event planning based in the Albany area.",
+    "keywords": [
+      "planner",
+      "Albany",
+      "wedding"
+    ],
+    "coords": [
+      42.6526,
+      -73.7562
+    ],
+    "source": "https://www.katieoevents.com/",
+    "checkedAt": "2026-10-19",
+    "tags": [],
+    "locationKind": "service-area"
+  },
+  {
+    "id": "rev-joy-burke",
+    "name": "Reverend Joy Burke",
+    "category": "officiant",
+    "city": "Saratoga Springs",
+    "state": "NY",
+    "url": "https://www.revjoyburke.com/",
+    "description": "Saratoga-area wedding officiant and ceremony services.",
+    "keywords": [
+      "officiant",
+      "Saratoga Springs",
+      "wedding"
+    ],
+    "coords": [
+      43.0831,
+      -73.7852
+    ],
+    "source": "https://www.revjoyburke.com/",
+    "checkedAt": "2026-10-19",
+    "tags": [],
+    "locationKind": "service-area"
+  },
+  {
+    "id": "pearl-grant-richmans",
+    "name": "Pearl Grant Richmans",
+    "category": "stationery",
+    "city": "Albany",
+    "state": "NY",
+    "url": "https://www.pearlgrant.com/collections/custom-stationery",
+    "description": "Custom stationery and wedding invitations.",
+    "keywords": [
+      "stationery",
+      "Albany",
+      "wedding"
+    ],
+    "coords": [
+      42.6526,
+      -73.7562
+    ],
+    "source": "https://www.pearlgrant.com/collections/custom-stationery",
+    "checkedAt": "2026-10-19",
+    "tags": [],
+    "locationKind": "city"
+  },
+  {
+    "id": "total-events",
+    "name": "Total Events",
+    "category": "rental",
+    "city": "Schenectady",
+    "state": "NY",
+    "url": "https://www.totaleventsny.com/weddings",
+    "description": "Wedding event rentals, tents, linens, lighting and decor.",
+    "keywords": [
+      "rental",
+      "Schenectady",
+      "wedding"
+    ],
+    "coords": [
+      42.8142,
+      -73.9396
+    ],
+    "source": "https://www.totaleventsny.com/weddings",
+    "checkedAt": "2026-10-19",
+    "tags": [],
+    "locationKind": "city"
+  },
+  {
+    "id": "smile-lounge",
+    "name": "Smile Lounge Interactive",
+    "category": "photobooth",
+    "city": "Albany",
+    "state": "NY",
+    "url": "https://www.smileloungeinteractive.com/",
+    "description": "Wedding photo booth rentals with Albany listed among service locations.",
+    "keywords": [
+      "photobooth",
+      "Albany",
+      "wedding"
+    ],
+    "coords": [
+      42.6526,
+      -73.7562
+    ],
+    "source": "https://www.smileloungeinteractive.com/",
+    "checkedAt": "2026-10-19",
+    "tags": [],
+    "locationKind": "service-area"
+  },
+  {
+    "id": "elario",
+    "name": "Elario Photography",
+    "category": "photography",
+    "city": "Albany",
+    "state": "NY",
+    "url": "https://elariophotography.com/",
+    "description": "Albany-based wedding photography.",
+    "keywords": [
+      "photography",
+      "Albany",
+      "wedding"
+    ],
+    "coords": [
+      42.6526,
+      -73.7562
+    ],
+    "source": "https://elariophotography.com/",
+    "checkedAt": "2026-10-19",
+    "tags": [],
+    "locationKind": "city"
+  },
+  {
+    "id": "flowers-by-pesha",
+    "name": "Flowers by Pesha",
+    "category": "florist",
+    "city": "Troy",
+    "state": "NY",
+    "url": "https://www.flowersbypesha.com/",
+    "description": "Wedding flowers, arrangements and bridal floral consultations in Troy.",
+    "keywords": [
+      "florist",
+      "Troy",
+      "wedding"
+    ],
+    "coords": [
+      42.7284,
+      -73.6918
+    ],
+    "source": "https://www.flowersbypesha.com/",
+    "checkedAt": "2026-10-19",
+    "tags": [],
+    "locationKind": "city"
+  },
+  {
+    "id": "fleurtacious",
+    "name": "Fleurtacious Designs",
+    "category": "florist",
+    "city": "Latham",
+    "state": "NY",
+    "url": "https://www.fleurtaciousdesigns.com/",
+    "description": "Latham florist offering custom wedding flowers and decor.",
+    "keywords": [
+      "florist",
+      "Latham",
+      "wedding"
+    ],
+    "coords": [
+      42.747,
+      -73.759
+    ],
+    "source": "https://www.fleurtaciousdesigns.com/",
+    "checkedAt": "2026-10-19",
+    "tags": [],
+    "locationKind": "city"
+  },
+  {
+    "id": "al-woodard-films",
+    "name": "Al Woodard Films",
+    "category": "videography",
+    "city": "Albany",
+    "state": "NY",
+    "url": "https://www.alwoodardfilms.com/",
+    "description": "Wedding and event films featuring Capital Region celebrations.",
+    "keywords": [
+      "videography",
+      "Albany",
+      "wedding"
+    ],
+    "coords": [
+      42.6526,
+      -73.7562
+    ],
+    "source": "https://www.alwoodardfilms.com/",
+    "checkedAt": "2026-10-19",
+    "tags": [],
+    "locationKind": "service-area"
+  },
+  {
+    "id": "christine-wheat",
+    "name": "Christine A. Wheat Special Events",
+    "category": "planner",
+    "city": "Saratoga Springs",
+    "state": "NY",
+    "url": "https://www.cweventsfirm.com/",
+    "description": "Wedding planning and event design with a Saratoga Springs office.",
+    "keywords": [
+      "planner",
+      "Saratoga Springs",
+      "wedding"
+    ],
+    "coords": [
+      43.0831,
+      -73.7852
+    ],
+    "source": "https://www.cweventsfirm.com/",
+    "checkedAt": "2026-10-19",
+    "tags": [],
+    "locationKind": "city"
+  },
+  {
+    "id": "clifton-park-rental",
+    "name": "Clifton Park Rental",
+    "category": "rental",
+    "city": "Clifton Park",
+    "state": "NY",
+    "url": "https://www.cliftonparkrental.com/",
+    "description": "Wedding and private event equipment and tent rentals.",
+    "keywords": [
+      "rental",
+      "Clifton Park",
+      "wedding"
+    ],
+    "coords": [
+      42.8656,
+      -73.7712
+    ],
+    "source": "https://www.cliftonparkrental.com/",
+    "checkedAt": "2026-10-19",
+    "tags": [],
+    "locationKind": "city"
+  },
+  {
+    "id": "premiere-transportation",
+    "name": "Premiere Transportation",
+    "category": "transportation",
+    "city": "Albany",
+    "state": "NY",
+    "url": "https://www.ridepremiere.com/services/wedding-transportation",
+    "description": "Wedding party and guest transportation in the Albany region.",
+    "keywords": [
+      "transportation",
+      "Albany",
+      "wedding"
+    ],
+    "coords": [
+      42.6526,
+      -73.7562
+    ],
+    "source": "https://www.ridepremiere.com/services/wedding-transportation",
+    "checkedAt": "2026-10-19",
+    "tags": [],
+    "locationKind": "city"
+  },
+  {
+    "id": "mazzone-hospitality",
+    "name": "Mazzone Hospitality",
+    "category": "catering",
+    "city": "Clifton Park",
+    "state": "NY",
+    "url": "https://www.mazzonehospitality.com/",
+    "description": "Wedding catering and event services in the Capital Region and surrounding areas.",
+    "keywords": [
+      "catering",
+      "Clifton Park",
+      "wedding"
+    ],
+    "coords": [
+      42.8656,
+      -73.7712
+    ],
+    "source": "https://www.mazzonehospitality.com/",
+    "checkedAt": "2026-10-19",
+    "tags": [],
+    "locationKind": "city"
   }
 ]
