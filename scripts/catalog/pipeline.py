@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Resumable business discovery/review queue. Never publishes unreviewed candidates."""
+"""Resumable business discovery/review queue. Unreviewed publication requires an explicit flag and is labeled."""
 import argparse, concurrent.futures, datetime, hashlib, ipaddress, json, os, re, socket, sqlite3, sys, time
 import urllib.parse, urllib.request, urllib.robotparser
 from pathlib import Path
@@ -105,7 +105,7 @@ def export(db,path):
   for (payload,) in db.execute("SELECT payload FROM queue WHERE status='approved' ORDER BY key"):out.write(payload+'\n')
  print('Exported reviewed records only')
 
-def sync(db,url,include_pending=False):
+def sync(db,url,include_pending=False,publish_unverified=False):
  token=os.environ.get('CATALOG_IMPORT_TOKEN')
  if not token:raise SystemExit('Set CATALOG_IMPORT_TOKEN in the process environment; never commit it.')
  target=urllib.parse.urlsplit(url)
@@ -122,7 +122,9 @@ def sync(db,url,include_pending=False):
    result=json.load(response)
    if result.get('accepted')!=len(rows):raise ValueError('Incomplete batch')
  for (payload,) in db.execute("SELECT payload FROM queue WHERE status IN ('approved','pending','needs-review','unreachable','blocked') ORDER BY key" if include_pending else "SELECT payload FROM queue WHERE status='approved' ORDER BY key"):
-  batch.append(json.loads(payload))
+  record=json.loads(payload)
+  if publish_unverified and not record.get('verification'):record['publishUnverified']=True
+  batch.append(record)
   if len(batch)==50:send(batch);total+=len(batch);batch=[]
  if batch:send(batch);total+=len(batch)
  print(json.dumps({'synced':total}))
@@ -132,11 +134,11 @@ def main():
  p=sub.add_parser('ingest');p.add_argument('input');p.add_argument('--reviewed-seed',action='store_true')
  p=sub.add_parser('crawl');p.add_argument('--limit',type=int,default=100);p.add_argument('--workers',type=int,choices=range(1,9),default=4)
  p=sub.add_parser('export');p.add_argument('output')
- p=sub.add_parser('sync');p.add_argument('site_url');p.add_argument('--include-pending',action='store_true')
+ p=sub.add_parser('sync');p.add_argument('site_url');p.add_argument('--include-pending',action='store_true');p.add_argument('--publish-unverified',action='store_true',help='Publish candidates with an explicit unverified label')
  sub.add_parser('status');args=parser.parse_args();db=database(args.db)
  if args.command=='ingest':ingest(db,args.input,args.reviewed_seed)
  elif args.command=='crawl':crawl(db,max(1,min(100000,args.limit)),args.workers)
  elif args.command=='export':export(db,args.output)
- elif args.command=='sync':sync(db,args.site_url,args.include_pending)
+ elif args.command=='sync':sync(db,args.site_url,args.include_pending or args.publish_unverified,args.publish_unverified)
  else:print(json.dumps(dict(db.execute('SELECT status,count(*) FROM queue GROUP BY status').fetchall())))
 if __name__=='__main__':main()

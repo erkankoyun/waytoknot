@@ -58,3 +58,18 @@ test('FTS-backed pagination works with 100,000 synthetic test records without lo
  assert.equal(result.total,100000);assert.equal(result.results.length,10);assert.equal(result.page,10000);assert.equal(result.pages,10000);
  sql.close();invalidateDirectoryMetadata();
 });
+
+test('explicit unverified publication is searchable without inventing a review and resists pending downgrade',async()=>{
+ const {db,sql}=fixture();
+ const v={...vendors[0],id:'unverified',checkedAt:'',publishUnverified:true};
+ await importDirectoryRecords(db,[validateDirectoryRecord(v)]);
+ const result=await searchDirectory(db,'');
+ assert.equal(result.indexed_count,1);assert.equal(result.results[0].checkedAt,'');
+ assert.equal(sql.prepare('SELECT status,site_checked_at FROM directory_records').get()?.status,'listed');
+ assert.equal(sql.prepare('SELECT site_checked_at FROM directory_records').get()?.site_checked_at,null);
+ await importDirectoryRecords(db,[{...v,publishUnverified:undefined}]);
+ assert.equal((await searchDirectory(db,'')).indexed_count,1);
+ await importDirectoryRecords(db,[{...v,verification:'manual',checkedAt:'2026-10-17'}]);
+ assert.equal(sql.prepare('SELECT status FROM directory_records').get()?.status,'approved');
+ sql.close();invalidateDirectoryMetadata();
+});

@@ -47,3 +47,5 @@ The existing `lib/vendors.json` seed was manually researched from official busin
 The category taxonomy lives in `public/assets/wedding-categories.json`. Add category mappings deliberately, not by treating every clothing shop as a tuxedo specialist or every camera shop as a wedding photographer.
 
 Check crawl totals with the queue status command and public import totals at `/api/catalog/status`. Local test coverage includes a separate in-memory set of 100,000 **synthetic test records**, which must never be imported into production.
+
+Explicit owner-authorized candidate publication: `python scripts/catalog/pipeline.py sync https://SITE-ORIGIN --publish-unverified`. These rows use `listed` status and show “Website not yet verified”; no review date or verification is invented. Default sync still stages candidates privately.

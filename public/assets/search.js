@@ -85,7 +85,7 @@
           const map=el('a','gc-action gc-action-secondary','View on map');map.href='harita.html?vendor='+encodeURIComponent(vendor.id);
           const source=el('p','gc-source-note');
           const sourceLink=el('a','','Source');sourceLink.href=vendor.source;sourceLink.target='_blank';sourceLink.rel='noopener noreferrer';
-          source.append(sourceLink,document.createTextNode(' · Reviewed '+vendor.checkedAt+' · Confirm current details with the business.'));
+          source.append(sourceLink,document.createTextNode((vendor.checkedAt?' · Reviewed '+vendor.checkedAt:' · Website not yet verified')+' · Confirm current details with the business.'));
           actions.append(visit,map);card.append(meta,heading,address,desc,actions,source);results.append(card);
         });
         if (data.pages>1) {
