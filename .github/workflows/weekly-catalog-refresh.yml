@@ -30,8 +30,24 @@ jobs:
             catalog-queue-
       - name: Refresh and compare websites
         run: python scripts/catalog/weekly_refresh.py --limit 250 --new-limit 100
+      - name: Validate live database configuration
+        env:
+          CATALOG_TOKEN: ${{ secrets.CATALOG_IMPORT_TOKEN }}
+          CATALOG_ORIGIN: ${{ vars.CATALOG_SITE_ORIGIN }}
+        run: |
+          if [ -z "$CATALOG_TOKEN" ]; then
+            echo "::error::CATALOG_IMPORT_TOKEN repository secret is missing. Set it to the same token used by the site's CATALOG_IMPORT_TOKEN runtime secret."
+            exit 1
+          fi
+          if [ -z "$CATALOG_ORIGIN" ]; then
+            echo "::error::CATALOG_SITE_ORIGIN repository variable is missing. Set it to the HTTPS origin hosting /api/catalog/import."
+            exit 1
+          fi
+          case "$CATALOG_ORIGIN" in
+            https://*) ;;
+            *) echo "::error::CATALOG_SITE_ORIGIN must begin with https://"; exit 1 ;;
+          esac
       - name: Publish reviewed records to D1
-        if: ${{ env.CATALOG_IMPORT_TOKEN != '' && env.CATALOG_SITE_ORIGIN != '' }}
         run: python scripts/catalog/pipeline.py sync "$CATALOG_SITE_ORIGIN"
       - name: Save current checkpoint
         if: always()
