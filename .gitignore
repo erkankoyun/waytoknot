@@ -56,3 +56,8 @@ next-env.d.ts
 /work/
 
 !.env.example
+
+# Bulk business discovery checkpoints and crawl data.
+/.catalog-work/
+__pycache__/
+*.pyc

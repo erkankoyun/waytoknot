@@ -1,0 +1,566 @@
+[
+  {
+    "id": "venue",
+    "label": "Venues",
+    "group": "Celebration & planning",
+    "keywords": [
+      "mekan",
+      "mekanlar",
+      "mekani",
+      "salonu",
+      "venues",
+      "reception",
+      "banquet"
+    ]
+  },
+  {
+    "id": "planner",
+    "label": "Wedding planners",
+    "group": "Celebration & planning",
+    "keywords": [
+      "planner",
+      "planners",
+      "coordinator",
+      "organizer",
+      "organizator",
+      "organizasyon",
+      "organizasyoncu"
+    ]
+  },
+  {
+    "id": "officiant",
+    "label": "Officiants & celebrants",
+    "group": "Celebration & planning",
+    "keywords": [
+      "officiant",
+      "officiants",
+      "celebrant",
+      "nikah",
+      "nikahmemuru"
+    ]
+  },
+  {
+    "id": "catering",
+    "label": "Catering",
+    "group": "Food & drink",
+    "keywords": [
+      "caterer",
+      "caterers",
+      "catering",
+      "yemek",
+      "yemeksirketi"
+    ]
+  },
+  {
+    "id": "cake",
+    "label": "Wedding cakes & bakeries",
+    "group": "Food & drink",
+    "keywords": [
+      "cake",
+      "cakes",
+      "bakery",
+      "bakeries",
+      "pasta",
+      "pastaci",
+      "pastane",
+      "pastaneler",
+      "pastasatanlar"
+    ]
+  },
+  {
+    "id": "sweets",
+    "label": "Desserts & chocolates",
+    "group": "Food & drink",
+    "keywords": [
+      "desserts",
+      "sweets",
+      "chocolate",
+      "chocolates",
+      "cikolata",
+      "sekerleme",
+      "tatli"
+    ]
+  },
+  {
+    "id": "barservice",
+    "label": "Bartenders & mobile bars",
+    "group": "Food & drink",
+    "keywords": [
+      "bartender",
+      "bartenders",
+      "barservice",
+      "kokteyl",
+      "cocktails"
+    ]
+  },
+  {
+    "id": "foodtruck",
+    "label": "Food trucks",
+    "group": "Food & drink",
+    "keywords": [
+      "foodtruck",
+      "foodtrucks"
+    ]
+  },
+  {
+    "id": "bridal",
+    "label": "Bridal boutiques",
+    "group": "Clothing & accessories",
+    "keywords": [
+      "gelinlik",
+      "gelinligi",
+      "gelinlikci",
+      "dress",
+      "dresses",
+      "gown",
+      "gowns",
+      "bridal",
+      "boutiques"
+    ]
+  },
+  {
+    "id": "groom",
+    "label": "Suits & tuxedos",
+    "group": "Clothing & accessories",
+    "keywords": [
+      "groom",
+      "tuxedo",
+      "tuxedos",
+      "tux",
+      "suit",
+      "suits",
+      "menswear",
+      "damatlik",
+      "takimelbise"
+    ]
+  },
+  {
+    "id": "formalwear",
+    "label": "Formal & occasion wear",
+    "group": "Clothing & accessories",
+    "keywords": [
+      "formalwear",
+      "bridesmaid",
+      "bridesmaids",
+      "abiye",
+      "nedime"
+    ]
+  },
+  {
+    "id": "alterations",
+    "label": "Tailors & alterations",
+    "group": "Clothing & accessories",
+    "keywords": [
+      "tailor",
+      "tailors",
+      "alterations",
+      "terzi",
+      "terziler",
+      "tadilat"
+    ]
+  },
+  {
+    "id": "shoes",
+    "label": "Wedding shoes",
+    "group": "Clothing & accessories",
+    "keywords": [
+      "shoes",
+      "shoe",
+      "ayakkabi",
+      "ayakkabici"
+    ]
+  },
+  {
+    "id": "accessories",
+    "label": "Veils & bridal accessories",
+    "group": "Clothing & accessories",
+    "keywords": [
+      "accessories",
+      "veil",
+      "veils",
+      "duvak",
+      "aksesuar"
+    ]
+  },
+  {
+    "id": "jeweler",
+    "label": "Jewelers & wedding rings",
+    "group": "Jewelry & gifts",
+    "keywords": [
+      "jeweler",
+      "jewelers",
+      "jeweller",
+      "jewellers",
+      "jewelry",
+      "jewellery",
+      "rings",
+      "ring",
+      "kuyumcu",
+      "kuyumcular",
+      "takici",
+      "yuzuk",
+      "alyans"
+    ]
+  },
+  {
+    "id": "gifts",
+    "label": "Gift shops",
+    "group": "Jewelry & gifts",
+    "keywords": [
+      "gift",
+      "gifts",
+      "giftshop",
+      "hediyelik",
+      "hediyelikci",
+      "hediyelikcilar",
+      "hediyelik_esya"
+    ]
+  },
+  {
+    "id": "favors",
+    "label": "Wedding favors & keepsakes",
+    "group": "Jewelry & gifts",
+    "keywords": [
+      "favors",
+      "favours",
+      "keepsakes",
+      "nikahsekeri",
+      "souvenir",
+      "souvenirs"
+    ]
+  },
+  {
+    "id": "barber",
+    "label": "Barbers & groom grooming",
+    "group": "Beauty & grooming",
+    "keywords": [
+      "barber",
+      "barbers",
+      "berber",
+      "berberler",
+      "grooming"
+    ]
+  },
+  {
+    "id": "hairsalon",
+    "label": "Hair salons",
+    "group": "Beauty & grooming",
+    "keywords": [
+      "hairsalon",
+      "kuafor",
+      "kuaforler",
+      "hairstyle",
+      "hairstylist",
+      "hairdresser",
+      "hairdressers"
+    ]
+  },
+  {
+    "id": "makeup",
+    "label": "Makeup artists",
+    "group": "Beauty & grooming",
+    "keywords": [
+      "makeup",
+      "makyaj",
+      "makyoz",
+      "makeupartist"
+    ]
+  },
+  {
+    "id": "beauty",
+    "label": "Beauty salons & bridal beauty",
+    "group": "Beauty & grooming",
+    "keywords": [
+      "beauty",
+      "salon",
+      "salons",
+      "guzellik",
+      "guzelliksalonu"
+    ]
+  },
+  {
+    "id": "nails",
+    "label": "Nail salons",
+    "group": "Beauty & grooming",
+    "keywords": [
+      "nails",
+      "nail",
+      "manicure",
+      "pedicure",
+      "manikur",
+      "pedikur"
+    ]
+  },
+  {
+    "id": "spa",
+    "label": "Spas & wellness",
+    "group": "Beauty & grooming",
+    "keywords": [
+      "spa",
+      "spas",
+      "massage",
+      "masaj",
+      "wellness"
+    ]
+  },
+  {
+    "id": "photography",
+    "label": "Photographers",
+    "group": "Photo & entertainment",
+    "keywords": [
+      "photography",
+      "photographer",
+      "photographers",
+      "photo",
+      "photos",
+      "fotograf",
+      "fotografci",
+      "fotografcilar"
+    ]
+  },
+  {
+    "id": "videography",
+    "label": "Videographers",
+    "group": "Photo & entertainment",
+    "keywords": [
+      "videography",
+      "videographer",
+      "videographers",
+      "video",
+      "film",
+      "films"
+    ]
+  },
+  {
+    "id": "photobooth",
+    "label": "Photo booths",
+    "group": "Photo & entertainment",
+    "keywords": [
+      "photobooth",
+      "photobooths"
+    ]
+  },
+  {
+    "id": "dj",
+    "label": "DJs",
+    "group": "Photo & entertainment",
+    "keywords": [
+      "dj",
+      "djs",
+      "discjockey"
+    ]
+  },
+  {
+    "id": "band",
+    "label": "Bands & ceremony musicians",
+    "group": "Photo & entertainment",
+    "keywords": [
+      "band",
+      "bands",
+      "musician",
+      "musicians",
+      "orchestra",
+      "orkestra",
+      "muzik",
+      "music",
+      "singer",
+      "singers"
+    ]
+  },
+  {
+    "id": "entertainment",
+    "label": "Wedding entertainers",
+    "group": "Photo & entertainment",
+    "keywords": [
+      "entertainment",
+      "entertainer",
+      "entertainers",
+      "magician",
+      "magicians"
+    ]
+  },
+  {
+    "id": "florist",
+    "label": "Florists",
+    "group": "Flowers & decor",
+    "keywords": [
+      "florist",
+      "florists",
+      "flowers",
+      "flower",
+      "cicek",
+      "cicekci",
+      "cicekciler"
+    ]
+  },
+  {
+    "id": "decor",
+    "label": "Event decorators & balloons",
+    "group": "Flowers & decor",
+    "keywords": [
+      "decor",
+      "decoration",
+      "decorator",
+      "decorators",
+      "balloons",
+      "balloon",
+      "dekor",
+      "dekorasyon",
+      "balon"
+    ]
+  },
+  {
+    "id": "rental",
+    "label": "Tents, furniture & event rentals",
+    "group": "Flowers & decor",
+    "keywords": [
+      "rental",
+      "rentals",
+      "tents",
+      "tent",
+      "kiralama",
+      "furniture"
+    ]
+  },
+  {
+    "id": "lighting",
+    "label": "Lighting, sound & staging",
+    "group": "Flowers & decor",
+    "keywords": [
+      "lighting",
+      "sound",
+      "staging",
+      "ses",
+      "isik",
+      "sahne"
+    ]
+  },
+  {
+    "id": "stationery",
+    "label": "Invitations & stationery",
+    "group": "Paper & personalization",
+    "keywords": [
+      "stationery",
+      "invitations",
+      "invitation",
+      "davetiye",
+      "davetiyeci"
+    ]
+  },
+  {
+    "id": "signage",
+    "label": "Signs, calligraphy & printing",
+    "group": "Paper & personalization",
+    "keywords": [
+      "signage",
+      "signs",
+      "calligraphy",
+      "printing",
+      "kaligrafi",
+      "baski",
+      "matbaa"
+    ]
+  },
+  {
+    "id": "transportation",
+    "label": "Limousines & guest transport",
+    "group": "Travel & accommodation",
+    "keywords": [
+      "transportation",
+      "transport",
+      "limo",
+      "limousine",
+      "shuttle",
+      "ulasim",
+      "transfer"
+    ]
+  },
+  {
+    "id": "hotel",
+    "label": "Hotels & guest accommodation",
+    "group": "Travel & accommodation",
+    "keywords": [
+      "hotel",
+      "hotels",
+      "accommodation",
+      "otel",
+      "oteller",
+      "konaklama"
+    ]
+  },
+  {
+    "id": "travel",
+    "label": "Honeymoons & travel agents",
+    "group": "Travel & accommodation",
+    "keywords": [
+      "travel",
+      "honeymoon",
+      "honeymoons",
+      "travelagent",
+      "balayi",
+      "seyahat"
+    ]
+  },
+  {
+    "id": "dance",
+    "label": "Wedding dance lessons",
+    "group": "Other wedding services",
+    "keywords": [
+      "dance",
+      "dancing",
+      "dans"
+    ]
+  },
+  {
+    "id": "childcare",
+    "label": "Wedding childcare",
+    "group": "Other wedding services",
+    "keywords": [
+      "childcare",
+      "babysitter",
+      "babysitting",
+      "cocukbakimi"
+    ]
+  },
+  {
+    "id": "petcare",
+    "label": "Wedding pet attendants",
+    "group": "Other wedding services",
+    "keywords": [
+      "petcare",
+      "petattendant",
+      "kopekbakimi"
+    ]
+  },
+  {
+    "id": "eventstaff",
+    "label": "Event staffing & servers",
+    "group": "Other wedding services",
+    "keywords": [
+      "eventstaff",
+      "staffing",
+      "servers",
+      "waiters",
+      "garson"
+    ]
+  },
+  {
+    "id": "security",
+    "label": "Event security",
+    "group": "Other wedding services",
+    "keywords": [
+      "security",
+      "guvenlik"
+    ]
+  },
+  {
+    "id": "cleaning",
+    "label": "Event cleaning",
+    "group": "Other wedding services",
+    "keywords": [
+      "cleaning",
+      "cleaners",
+      "temizlik"
+    ]
+  }
+]

@@ -641,9 +641,7 @@
       "wedding",
       "outdoor",
       "indoor",
-      "garden",
-      "rustic",
-      "barn"
+      "garden"
     ],
     "coords": [
       42.4684,
@@ -654,9 +652,7 @@
     "tags": [
       "outdoor",
       "indoor",
-      "garden",
-      "rustic",
-      "barn"
+      "garden"
     ],
     "locationKind": "city"
   },
@@ -1054,6 +1050,111 @@
     "source": "https://www.mazzonehospitality.com/",
     "checkedAt": "2026-10-19",
     "tags": [],
+    "locationKind": "city"
+  },
+  {
+    "id": "patsys-barber",
+    "name": "Patsy’s Barber Shop",
+    "category": "barber",
+    "city": "Albany",
+    "state": "NY",
+    "url": "https://patsysbarbershop.com/",
+    "description": "Barber shop and men’s grooming services in downtown Albany.",
+    "keywords": [
+      "barber",
+      "Albany",
+      "wedding"
+    ],
+    "coords": [
+      42.6526,
+      -73.7562
+    ],
+    "source": "https://patsysbarbershop.com/",
+    "checkedAt": "2026-10-19",
+    "locationKind": "city"
+  },
+  {
+    "id": "glennpeter-albany",
+    "name": "Glennpeter Jewelers Albany",
+    "category": "jeweler",
+    "city": "Albany",
+    "state": "NY",
+    "url": "https://www.glennpeterjewelers.com/company/locations/",
+    "description": "Jeweler with an Albany location offering engagement rings and wedding jewelry.",
+    "keywords": [
+      "jeweler",
+      "Albany",
+      "wedding"
+    ],
+    "coords": [
+      42.6526,
+      -73.7562
+    ],
+    "source": "https://www.glennpeterjewelers.com/company/locations/",
+    "checkedAt": "2026-10-19",
+    "locationKind": "city"
+  },
+  {
+    "id": "waldorf-tuxedo",
+    "name": "Waldorf Tuxedo Company",
+    "category": "groom",
+    "city": "Albany",
+    "state": "NY",
+    "url": "https://waldorftuxedo.com/",
+    "description": "Albany formalwear business serving wedding parties and special occasions.",
+    "keywords": [
+      "groom",
+      "Albany",
+      "wedding"
+    ],
+    "coords": [
+      42.6526,
+      -73.7562
+    ],
+    "source": "https://waldorftuxedo.com/",
+    "checkedAt": "2026-10-19",
+    "locationKind": "city"
+  },
+  {
+    "id": "gretchens-hallmark-albany",
+    "name": "Gretchen’s Hallmark Shop Albany",
+    "category": "gifts",
+    "city": "Albany",
+    "state": "NY",
+    "url": "https://stores.hallmark.com/ny/albany/gretchens-hallmark-shop-albany-ny-000883.html",
+    "description": "Albany gift shop with cards, gift wrap and occasion gifts.",
+    "keywords": [
+      "gifts",
+      "Albany",
+      "wedding"
+    ],
+    "coords": [
+      42.6526,
+      -73.7562
+    ],
+    "source": "https://stores.hallmark.com/ny/albany/gretchens-hallmark-shop-albany-ny-000883.html",
+    "checkedAt": "2026-10-19",
+    "locationKind": "city"
+  },
+  {
+    "id": "european-tailoring-albany",
+    "name": "European Tailoring",
+    "category": "alterations",
+    "city": "Albany",
+    "state": "NY",
+    "url": "https://theeuropeantailor.com/",
+    "description": "Albany tailoring, bridal alterations and formalwear services.",
+    "keywords": [
+      "alterations",
+      "Albany",
+      "wedding"
+    ],
+    "coords": [
+      42.6526,
+      -73.7562
+    ],
+    "source": "https://theeuropeantailor.com/",
+    "checkedAt": "2026-10-19",
     "locationKind": "city"
   }
 ]

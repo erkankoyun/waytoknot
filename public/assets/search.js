@@ -2,6 +2,7 @@
   'use strict';
   let labels = {};
   let requestId = 0;
+  let categoryGroups=[];let categoryCounts={};
   document.addEventListener('DOMContentLoaded', function () {
     const intro = document.querySelector('.wk-search-home');
     const layout = document.querySelector('.wk-search-results');
@@ -24,7 +25,14 @@
       const wrap = el('label','gc-filter'); wrap.append(el('span','',label));
       const select = el('select'); select.setAttribute('aria-label',label);
       const all = el('option','',key==='radius'?'From search (default)':'All'); all.value = ''; select.append(all);
-      values.forEach(value => { const option = el('option','',labels[value] || value); option.value = value; option.selected = state.get(key) === value; select.append(option); });
+      const groups=new Map();
+      values.forEach(value => { const option = el('option','',labels[value] || value); option.value = value; option.selected = state.get(key) === value;
+        if(key==='category'){
+          option.textContent=(labels[value]||value)+' ('+(categoryCounts[value]||0)+')';
+          const name=categoryGroups.find(c=>c.id===value)?.group||'Other services';
+          if(!groups.has(name)){const group=el('optgroup');group.label=name;groups.set(name,group);select.append(group);}
+          groups.get(name).append(option);
+        }else select.append(option); });
       select.addEventListener('change',()=>navigate({[key]:select.value,page:''}));
       wrap.append(select); parent.append(wrap);
     }
@@ -43,7 +51,7 @@
         if (!response.ok) throw new Error('Search is unavailable. Please try again.');
         const data = await response.json();
         if(activeRequest!==requestId)return;
-        labels=data.category_labels||labels;
+        labels=data.category_labels||labels;categoryGroups=data.category_groups||categoryGroups;categoryCounts=data.category_counts||categoryCounts;
         results.replaceChildren();
         const title = el('h2','gc-results-title', q ? 'Results for “'+q+'”' : 'US wedding vendors');
         const count = el('p','gc-search-status',data.total+' results · '+data.indexed_count+' listed vendors'); count.setAttribute('role','status');
@@ -58,6 +66,7 @@
 
         const filters = el('div','gc-filters'); addSelect(filters,'Category','category',data.categories); addSelect(filters,'City','city',data.cities); if(data.nearby)addSelect(filters,'Radius (miles)','radius',['25','50','100']); results.append(filters);
         if (!data.results.length) {
+          if(state.get('category')&&!(categoryCounts[state.get('category')]||0))results.append(el('p','gc-search-explanation','This category is available, but no businesses have been added to it yet.'));
           results.append(el('p','gc-empty','No listed vendors match every part of this search. Try a suggestion below or change your filters.'));
           (data.suggestions||[]).forEach(suggestion=>{
             const choice=el('button','gc-query-chip',suggestion.label);choice.type='button';
@@ -134,6 +143,22 @@
       });
       form.addEventListener('focusout',()=>setTimeout(()=>{if(!form.contains(document.activeElement))cancelSuggestions();},150));
     });
+    const browser=document.querySelector('.wk-category-browser');
+    if(browser){
+      fetch('/api/search?metadata=1').then(r=>{if(!r.ok)throw new Error();return r.json();}).then(data=>{
+        labels=data.category_labels;categoryGroups=data.category_groups||[];categoryCounts=data.category_counts||{};
+        const select=browser.querySelector('select');select.replaceChildren();
+        const initial=el('option','','Choose a wedding service');initial.value='';select.append(initial);
+        const groups=new Map();
+        categoryGroups.forEach(category=>{
+          if(!groups.has(category.group)){const group=el('optgroup');group.label=category.group;groups.set(category.group,group);select.append(group);}
+          const count=categoryCounts[category.id]||0;
+          const option=el('option','',category.label+' · '+(count?count+' listed':'listings coming soon'));option.value=category.id;groups.get(category.group).append(option);
+        });
+        browser.hidden=false;
+        browser.querySelector('button').addEventListener('click',()=>{if(select.value)navigate({q:'',category:select.value,city:'',page:'',radius:''});else select.focus();});
+      }).catch(()=>{browser.hidden=true;});
+    }
     window.addEventListener('popstate',()=>{
       state=new URLSearchParams(location.search);
       if(state.has('q')||state.has('city')||state.has('category'))run();

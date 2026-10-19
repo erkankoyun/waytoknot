@@ -6,12 +6,9 @@ export type Vendor = {
   source: string; checkedAt: string; tags?: string[]; locationKind?: string;
 };
 export const vendors = catalog as Vendor[];
-export const categoryLabels: Record<string, string> = {
-  bridal: "Bridal wear", venue: "Venues", photography: "Photography", catering: "Catering",
-  florist: "Florists", dj: "DJs & music", cake: "Wedding cakes", beauty: "Hair & makeup",
-  planner: "Wedding planners", officiant: "Officiants", stationery: "Invitations & stationery",
-  rental: "Rentals & decor", photobooth: "Photo booths", videography: "Videography", transportation: "Transportation",
-};
+import categoryDefinitions from "../public/assets/wedding-categories.json";
+export const weddingCategories = categoryDefinitions;
+export const categoryLabels: Record<string,string> = Object.fromEntries(weddingCategories.map(c=>[c.id,c.label]));
 export function normalize(value: string) {
   return value.toLowerCase().replace(/ı/g, "i").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
 }
@@ -30,6 +27,7 @@ const aliases: Record<string,string> = {
   limo:"transportation",limousine:"transportation",shuttle:"transportation",transport:"transportation",ulasim:"transportation",
   outdoors:"outdoor",bahce:"garden",bahcede:"garden",dugun:"wedding",dugunu:"wedding",weddings:"wedding",
 };
+for(const category of weddingCategories)for(const keyword of category.keywords)aliases[keyword]=category.id;
 const stop = new Set("a an the and or in at of for to with my our us me i m we am are is want need find looking look search please by best top good professional local show some would like can you help wedding vendor vendors services service near nearby around within miles mile mi km yakin yakininda yakinlarinda cevresinde dugun icin bir bana bul istiyorum ariyorum en yer mekanlari".split(" "));
 const cities = [...new Map(vendors.map(v=>[normalize(v.city),{name:v.city,state:v.state,coords:v.coords}])).entries()];
 const cityAliases: Record<string,string> = {nyc:"new york","new york city":"new york",saratoga:"saratoga springs",dc:"washington dc","washington d c":"washington dc"};
@@ -62,9 +60,11 @@ function distanceMiles(a:number[],b:number[]){
 }
 const phraseRules: Array<[RegExp,string]> = [
   [/\bphoto booths?\b/g,"photobooth"],[/\bopen air\b/g,"outdoor"],[/\bacik hava\b/g,"outdoor"],
-  [/\bhair and makeup\b/g,"beauty"],[/\bnew york city\b/g,"new york"],
+  [/\bhair and makeup\b/g,"beauty"],[/\bhair salons?\b/g,"hairsalon"],[/\bbeauty salons?\b/g,"beauty"],[/\bbridal beauty\b/g,"beauty"],
+  [/\bguzellik salonlari?\b/g,"beauty"],[/\btakim elbise(?: satanlar)?\b/g,"groom"],[/\bhediye(?:lik)? esya(?: satanlar)?\b/g,"gifts"],
+  [/\b(?:wedding|engagement) rings?\b/g,"jeweler"],[/\bwedding favors?\b/g,"favors"],[/\bnew york city\b/g,"new york"],
 ];
-export function searchVendors(query="",category="",city="",page=1,radius=0,suggest=false){
+export function parseSearch(query="",category="",city="",radius=0,extraCities:Array<{name:string;state:string;coords:number[]}>=[]){
   const original=normalize(query).slice(0,200);
   let text=original;
   for(const [pattern,replacement] of phraseRules)text=text.replace(pattern,replacement);
@@ -78,7 +78,7 @@ export function searchVendors(query="",category="",city="",page=1,radius=0,sugge
   let location: {name:string;state:string;coords:number[]}|undefined;
   let selectedState="";
   // Long phrases first, so Los Angeles and New York are not separate keywords.
-  const locationPhrases=[...cities.map(([key,value])=>({key,value})),...Object.entries(cityAliases).map(([key,target])=>({key,value:cities.find(([c])=>c===target)?.[1]}))].filter(x=>x.value).sort((a,b)=>b.key.length-a.key.length);
+  const locationPhrases=[...extraCities.map(value=>({key:normalize(value.name),value})),...cities.map(([key,value])=>({key,value})),...Object.entries(cityAliases).map(([key,target])=>({key,value:cities.find(([c])=>c===target)?.[1]}))].filter(x=>x.value).sort((a,b)=>b.key.length-a.key.length);
   const padded=(s:string)=>` ${s} `;
   const filterCity=normalize(city);
   const statePhrase=Object.entries(stateNames).sort((a,b)=>b[0].length-a[0].length).find(([name])=>padded(text).includes(` ${name} `));
@@ -88,13 +88,18 @@ export function searchVendors(query="",category="",city="",page=1,radius=0,sugge
       location=entry.value;text=padded(text).replace(` ${entry.key} `," ").trim();break;
     }
   }
-  const states=new Set(vendors.map(v=>v.state.toLowerCase()));
-  text=text.split(" ").filter(word=>{if(states.has(word)){selectedState=word.toUpperCase();return false;}return true;}).join(" ");
+  const isExactName=records.some(r=>r.name===normalize(query));
+  const states=new Set("al ak az ar ca co ct de dc fl ga hi id il in ia ks ky la me md ma mi mn ms mo mt ne nv nh nj nm ny nc nd oh ok or pa ri sc sd tn tx ut vt va wa wv wi wy".split(" "));
+  text=text.split(" ").filter(word=>{if(!isExactName&&states.has(word)&&(!stop.has(word)||new RegExp("\\b"+word.toUpperCase()+"\\b").test(query))){selectedState=word.toUpperCase();return false;}return true;}).join(" ");
   const terms=[...new Set(text.split(" ").map(word=>aliases[word]||word).filter(word=>word&&!stop.has(word)))];
   const selectedCategory=aliases[normalize(category)]||normalize(category);
-  const queryCategories=terms.filter(word=>Object.hasOwn(categoryLabels,word));
+  const queryCategories=isExactName?[]:terms.filter(word=>Object.hasOwn(categoryLabels,word));
   const needsLocation=nearby&&!location&&!filterCity;
   const unsupported=terms.some(t=>/^(cheap|affordable|budget|available|availability|today|tomorrow|ucuz)$/.test(t))||/[$€]|\b\d{4}-\d{2}-\d{2}\b/.test(query);
+  return {original,terms,correctedQuery,nearby,radiusMiles,location,selectedState,filterCity,selectedCategory,queryCategories,needsLocation,unsupported};
+}
+export function searchVendors(query="",category="",city="",page=1,radius=0,suggest=false){
+  const {terms,correctedQuery,nearby,radiusMiles,location,selectedState,filterCity,selectedCategory,queryCategories,needsLocation,unsupported}=parseSearch(query,category,city,radius);
   const matched=records.flatMap(({v,name,words})=>{
     if(needsLocation)return [];
     if(selectedCategory&&v.category!==selectedCategory)return [];
@@ -119,7 +124,8 @@ export function searchVendors(query="",category="",city="",page=1,radius=0,sugge
   }).sort((a,b)=>b.score-a.score||(a.distance??0)-(b.distance??0)||a.vendor.name.localeCompare(b.vendor.name));
   const pages=Math.max(1,Math.ceil(matched.length/10));
   const currentPage=Math.min(pages,Math.max(1,Number.isFinite(page)?Math.floor(page):1));
-  const availableCategories=[...new Set(vendors.map(v=>v.category))].sort((a,b)=>categoryLabels[a].localeCompare(categoryLabels[b]));
+  const availableCategories=weddingCategories.map(c=>c.id);
+  const categoryCounts=Object.fromEntries(availableCategories.map(id=>[id,vendors.filter(v=>v.category===id).length]));
   const alternatives=matched.length?[]:[
     ...(location?[{label:`All vendors in ${location.name}`,q:location.name},...(!nearby?[{label:`${location.name} area · within 50 miles`,q:`${queryCategories[0]||"wedding vendors"} near ${location.name}`}]:[])]:[]),
     ...(queryCategories[0]?[{label:`Browse ${categoryLabels[queryCategories[0]]}`,q:queryCategories[0]}]:[]),
@@ -127,7 +133,7 @@ export function searchVendors(query="",category="",city="",page=1,radius=0,sugge
   return {
     query,total:matched.length,page:currentPage,pages,limit:10,indexed_count:vendors.length,
     results:matched.slice((currentPage-1)*10,currentPage*10).map(({vendor,distance})=>({...vendor,...(distance!==undefined?{distanceMiles:Math.round(distance)}:{})})),
-    categories:availableCategories,category_labels:categoryLabels,cities:[...new Set(vendors.map(v=>v.city))].sort(),
+    categories:availableCategories,category_labels:categoryLabels,category_groups:weddingCategories,category_counts:categoryCounts,cities:[...new Set(vendors.map(v=>v.city))].sort(),
     corrected_query:correctedQuery,location:location?.name||null,nearby:nearby&&!!location,radius_miles:radiusMiles,
     needs_location:needsLocation,unsupported_constraints:unsupported,
     suggestions:alternatives,coverage:"Listed US vendors only; expanded coverage is concentrated in New York’s Capital Region. No live prices or availability.",

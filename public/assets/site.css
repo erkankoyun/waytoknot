@@ -99,3 +99,12 @@ img,video{height:auto}
 .gc-source-note{font-size:11px;line-height:1.6;color:#7b8290;margin-top:14px}
 .gc-source-note a{color:#596288;text-decoration:underline}
 .wk-search-page .gc-suggestions button:focus{background:#f2f1fa;outline:2px solid #837bc2;outline-offset:-2px}
+
+.wk-category-browser{max-width:540px;margin:28px auto 0;text-align:center}
+.wk-category-browser>label{display:block;font-size:13px;margin-bottom:9px;color:#5e6679}
+.wk-category-browser>div{display:flex;gap:8px;min-width:0}
+.wk-category-browser select{flex:1;width:0;min-width:0;max-width:100%;border:1px solid #dfe1e5;border-radius:10px;background:white;color:#293356;padding:10px 12px;font-size:14px}
+.wk-category-browser button{border:0;border-radius:10px;background:#f0eff8;color:#282866;padding:10px 16px;font-size:14px}
+.wk-category-browser>p{font-size:11px;color:#7b8290;line-height:1.6;margin:9px 0 0}
+.wk-has-results .wk-category-browser{display:none}
+@media(max-width:400px){.wk-category-browser>div{flex-direction:column}.wk-category-browser select{width:100%}}
