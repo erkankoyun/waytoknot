@@ -1,0 +1,50 @@
+name: Import Pennsylvania vendors to D1
+on:
+  push:
+    paths:
+      - '.github/workflows/import-pennsylvania-vendors.yml'
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: read
+concurrency:
+  group: catalog-pa-import
+  cancel-in-progress: false
+jobs:
+  import-pa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      GH_TOKEN: ${{ github.token }}
+      CATALOG_IMPORT_TOKEN: ${{ secrets.CATALOG_IMPORT_TOKEN }}
+      SITES_ACCESS_BEARER: ${{ secrets.SITES_ACCESS_BEARER }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check secure import credentials
+        run: |
+          if [ -z "$CATALOG_IMPORT_TOKEN" ]; then
+            echo "::error::Missing CATALOG_IMPORT_TOKEN secret. No records imported."
+            exit 1
+          fi
+      - name: Download successful Pennsylvania discovery artifact
+        run: |
+          mkdir -p .catalog-work
+          gh run download 39436057949 --repo "${{ github.repository }}" --name waytoknot-pennsylvania-discovery --dir .catalog-work
+          test -s .catalog-work/queue.sqlite
+          python scripts/catalog/pipeline.py status
+      - name: Publish PA candidates as explicitly unverified, with conflict-safe upserts
+        run: |
+          python scripts/catalog/pipeline.py sync https://waytoknot.com --publish-unverified
+      - name: Verify live listing counts
+        if: success()
+        run: |
+          python - <<'PY'
+          import urllib.request,json
+          url='https://waytoknot.com/api/catalog/status'
+          with urllib.request.urlopen(url,timeout=30) as resp:
+            data=json.load(resp)
+          print(json.dumps(data))
+          PY
