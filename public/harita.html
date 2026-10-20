@@ -25,13 +25,13 @@
 <meta name="apple-mobile-web-app-capable" content="no">
 
 
-<link rel="stylesheet" href="typo3temp/assets/css/7015c8c4ac5ff815b57530b221005fc62e08.css?1772740999" media="all">
-<link rel="stylesheet" href="_assets/90b18b54e9b9f1b491b9423745702b08/Css/chat4dce.css?1777106052" media="all">
-<link rel="stylesheet" href="_assets/8b1ef067de4e3422d5b6e67d56a9ac7e/Css/appf8da.css?1773420060" media="all">
-<link rel="stylesheet" href="_assets/8b1ef067de4e3422d5b6e67d56a9ac7e/Css/loaderbd28.css?1771683861" media="all">
-<link rel="stylesheet" href="_assets/8b1ef067de4e3422d5b6e67d56a9ac7e/Css/layoutec65.css?1775588051" media="all">
-<link rel="stylesheet" href="vendor/unpkg.com/maplibre-gl%405.2.0/dist/maplibre-gl.css" media="all">
-<link rel="stylesheet" href="_assets/20527c9d58754ce0a4ed8f67ae0a84c8/Css/gelincicegi-map4022.css?1775843253" media="all">
+<link rel="stylesheet" href="/typo3temp/assets/css/7015c8c4ac5ff815b57530b221005fc62e08.css?1772740999" media="all">
+<link rel="stylesheet" href="/_assets/90b18b54e9b9f1b491b9423745702b08/Css/chat4dce.css?1777106052" media="all">
+<link rel="stylesheet" href="/_assets/8b1ef067de4e3422d5b6e67d56a9ac7e/Css/appf8da.css?1773420060" media="all">
+<link rel="stylesheet" href="/_assets/8b1ef067de4e3422d5b6e67d56a9ac7e/Css/loaderbd28.css?1771683861" media="all">
+<link rel="stylesheet" href="/_assets/8b1ef067de4e3422d5b6e67d56a9ac7e/Css/layoutec65.css?1775588051" media="all">
+<link rel="stylesheet" href="/vendor/unpkg.com/maplibre-gl%405.2.0/dist/maplibre-gl.css" media="all">
+<link rel="stylesheet" href="/_assets/20527c9d58754ce0a4ed8f67ae0a84c8/Css/gelincicegi-map4022.css?1775843253" media="all">
 
 
 
@@ -42,7 +42,7 @@
 <link rel="canonical" href="harita.html">
 <link rel="icon" type="image/x-icon" sizes="any" href="/favicon.ico?v=3">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=3">
-<link rel="stylesheet" href="assets/site.css?v=responsive-2">
+<link rel="stylesheet" href="/assets/site.css?v=responsive-2">
 
 <link rel="canonical" href="https://waytoknot.com/harita">
 <meta name="application-name" content="Way to Knot">
@@ -51,8 +51,10 @@
 <meta property="og:url" content="https://waytoknot.com/harita">
 <meta property="og:type" content="website">
 <meta name="description" content="Way to Knot helps you find US wedding vendors, plan your budget and arrange your wedding seating.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&amp;display=swap">
+<link rel="stylesheet" href="/assets/vendor-map.css?v=20261020-2">
 </head>
-<body>
+<body class="wk-map-page">
 <!-- Pre loader -->
 <div id="loader" class="loader">
     <div class="plane-container">
@@ -65,13 +67,13 @@
 <header class="bb-header"><nav class="bb-nav" aria-label="Main navigation"><button class="bb-menu-toggle" type="button" aria-controls="bb-navigation" aria-expanded="false"><span>Menu</span><span aria-hidden="true">☰</span></button><div class="bb-nav-links" id="bb-navigation"><a href="search.html">Search</a><a href="harita.html" aria-current="page">Map</a><a href="oturma-plani.html">Seating Planner</a><a href="danisman.html">Wedding Advisor</a><a href="wedding-info.html">Wedding Info Assistant</a></div></nav></header>
 
 <main id="main-content">
-<a class="bb-page-brand" href="index.html" aria-label="Way to Knot home"><img src="assets/brand/way-to-knot.svg" alt="Way to Knot" width="420" height="125"></a>
+
     
 
     
     
 <div class="gelincicegi-map-app app-shell">
-    <div id="gelincicegi-map"></div>
+    <div id="gelincicegi-map" aria-label="US wedding vendor map"></div><p class="map-status" id="map-status" role="status"></p>
     <div class="route-info-bar hidden-bar" id="gelincicegi-routeInfo">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         <span id="gelincicegi-routeDist"></span>
@@ -82,9 +84,12 @@
 
     <aside class="places-panel">
         <div class="panel-header">
-            <div class="panel-brand">Way to Knot</div>
-            <div class="panel-count">US Wedding Vendors</div>
-            <div class="panel-subtitle">Explore our US vendor directory</div>
+            <div class="panel-subtitle" id="map-count" aria-live="polite">Loading vendors…</div>
+            <form class="panel-search" id="map-search" role="search">
+                <label class="bb-sr-only" for="map-query">Search vendors, cities or states</label>
+                <input type="search" id="map-query" placeholder="What are you looking for?" autocomplete="off">
+            </form>
+            <div class="category-chips" id="map-categories" aria-label="Vendor categories"></div>
         </div>
         <div class="places-list" id="gelincicegi-placesList"></div>
     </aside>
@@ -147,14 +152,11 @@
 <div><h2>About Us</h2><a href="our-values.html">Our Values</a><a href="index.html" class="bb-footer-brand">Way to Knot</a></div>
 </div><p class="bb-copyright">© 2026 Way to Knot. All rights reserved.</p></footer>
 
-<script src="_assets/8b1ef067de4e3422d5b6e67d56a9ac7e/JavaScript/appcc78.js?1771681566"></script>
-<script src="_assets/8b1ef067de4e3422d5b6e67d56a9ac7e/JavaScript/main94c6.js?v=waytoknot-1"></script>
-<script src="_assets/8b1ef067de4e3422d5b6e67d56a9ac7e/JavaScript/typewriter4c0d.js?v=waytoknot-1"></script>
-<script src="vendor/unpkg.com/maplibre-gl%405.2.0/dist/maplibre-gl.js"></script>
-<script src="assets/us-map.js?v=waytoknot-1"></script>
+<script src="/vendor/unpkg.com/maplibre-gl%405.2.0/dist/maplibre-gl.js?v=5.2.0-fixed"></script>
+<script src="/assets/us-map.js?v=20261020-map-2"></script>
 
 
-<script src="assets/site.js?v=clean-utm-20261020" defer></script>
+<script src="/assets/site.js?v=clean-utm-20261020" defer></script>
 </body>
 
 
