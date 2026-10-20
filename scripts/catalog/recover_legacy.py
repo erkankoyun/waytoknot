@@ -21,7 +21,7 @@ def main():
     p=argparse.ArgumentParser()
     p.add_argument("--origin",default="https://gelin-cicegi.mighty-chair-7509.chatgpt.site")
     p.add_argument("--output",type=pathlib.Path,default=pathlib.Path(".catalog-work/original-recovery.jsonl"))
-    p.add_argument("--expected",type=int,default=969)
+    p.add_argument("--expected",type=int,default=1849)
     a=p.parse_args()
     if not a.origin.startswith("https://"):raise SystemExit("HTTPS origin required")
     first=fetch(a.origin,1)
