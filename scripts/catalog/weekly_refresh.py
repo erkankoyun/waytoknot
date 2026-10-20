@@ -56,7 +56,7 @@ def main():
     db=database(args.db)
     # Only bootstrap a new checkpoint. Candidate rows are NOT presumed verified.
     if db.execute('SELECT count(*) FROM queue').fetchone()[0] == 0:
-        seed=ROOT/'data/2026-10-19-category-expansion.jsonl'
+        seed=ROOT/'scripts/catalog/data/2026-10-19-category-expansion.jsonl'
         if seed.exists():
             ingest(db,str(seed))
     changes=refresh(db,max(0,min(args.limit,1000)))
