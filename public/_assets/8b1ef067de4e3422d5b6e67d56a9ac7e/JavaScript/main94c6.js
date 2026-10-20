@@ -834,7 +834,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		warningsHost.classList.add('is-visible');
 		warningsHost.innerHTML = '<div class="seating-planner__warnings-title">Items to review</div><ul class="seating-planner__warnings-list">' + warnings.map(function (warning) {
-			return '<li>' + warning + '</li>';
+			return '<li>' + escapeHtml(warning) + '</li>';
 		}).join('') + '</ul>';
 	}
 
@@ -873,17 +873,17 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 
 		if (compact) {
-			return '<div class="seating-planner__guest seating-planner__guest--seat" draggable="true" data-guest-id="' + guest.id + '" title="' + guest.name + ' · ' + guest.group + preferenceLabel + '">' +
-				'<span class="seating-planner__guest-avatar">' + guestInitials(guest.name) + '</span>' +
-				'<span class="seating-planner__guest-name">' + shortGuestName(guest.name) + '</span>' +
+			return '<div class="seating-planner__guest seating-planner__guest--seat" draggable="true" data-guest-id="' + guest.id + '" title="' + escapeHtml(guest.name) + ' · ' + escapeHtml(guest.group) + preferenceLabel + '">' +
+				'<span class="seating-planner__guest-avatar">' + escapeHtml(guestInitials(guest.name)) + '</span>' +
+				'<span class="seating-planner__guest-name">' + escapeHtml(shortGuestName(guest.name)) + '</span>' +
 			'</div>';
 		}
 
 		return '<div class="seating-planner__guest" draggable="true" data-guest-id="' + guest.id + '">' +
-			'<span class="seating-planner__guest-avatar">' + guestInitials(guest.name) + '</span>' +
+			'<span class="seating-planner__guest-avatar">' + escapeHtml(guestInitials(guest.name)) + '</span>' +
 			'<span class="seating-planner__guest-body">' +
-				'<span class="seating-planner__guest-name">' + guest.name + '</span>' +
-				'<span class="seating-planner__guest-meta">' + guest.group + preferenceLabel + '</span>' +
+				'<span class="seating-planner__guest-name">' + escapeHtml(guest.name) + '</span>' +
+				'<span class="seating-planner__guest-meta">' + escapeHtml(guest.group) + preferenceLabel + '</span>' +
 			'</span>' +
 		'</div>';
 	}
@@ -956,7 +956,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		var footprint = getPlanObjectFootprint(planObject);
 		return '<div class="seating-planner__plan-object seating-planner__plan-object--' + planObject.type + '" data-plan-object-id="' + planObject.id + '" style="left:' + planObject.position.x + 'px;top:' + planObject.position.y + 'px;width:' + footprint.width + 'px;height:' + footprint.height + 'px;">' +
 			'<button type="button" class="seating-planner__plan-object-handle" data-plan-object-drag aria-label="Move object">Drag</button>' +
-			'<span class="seating-planner__plan-object-label">' + planObject.label + '</span>' +
+			'<span class="seating-planner__plan-object-label">' + escapeHtml(planObject.label) + '</span>' +
 			'<button type="button" class="seating-planner__plan-object-remove" data-plan-object-remove="' + planObject.id + '" aria-label="Remove object">Remove</button>' +
 		'</div>';
 	}
@@ -1120,6 +1120,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		renderSummary(root, state);
 		renderWarnings(root, state);
+        root.querySelectorAll('[data-guest-id],[data-seat-id]').forEach(function(node){node.tabIndex=0;node.setAttribute('role','button');node.setAttribute('aria-label',node.hasAttribute('data-guest-id')?'Select '+node.textContent.trim():'Move selected guest to this seat');});
 		attachInteractions(root, state);
 	}
 
@@ -1507,6 +1508,35 @@ document.addEventListener('DOMContentLoaded', function () {
 
 			removeButton.closest('[data-seating-config-row]').remove();
 		});
+
+        function snapshot() {
+            return {version:1,configs:parseTableConfigs(root).map(function(c){return {layout:c.layout,count:c.count};}),guestsText:guestInput.value,pairsText:pairsInput.value,conflictsText:conflictsInput.value,stageCount:Number(stageCountInput.value),aisleCount:Number(aisleCountInput.value),tables:state.tables.map(function(t){return {id:t.id,position:t.position,area:t.area,collapsed:!!t.collapsed};}),assignments:state.guests.filter(function(g){return g.seatId;}).map(function(g){return {guestId:g.id,seatId:g.seatId};}),objects:state.planObjects.map(function(o){return {type:o.type,label:o.label,position:o.position,area:o.area};})};
+        }
+        function restore(plan) {
+            if (!plan || plan.version !== 1 || !Array.isArray(plan.configs) || typeof plan.guestsText !== 'string') throw new Error('This is not a Way to Knot seating plan.');
+            var layouts=['round-4','round-5','round-6','round-8','row-5','row-8','row-10'];
+            if (!plan.configs.length || plan.configs.length>20 || plan.guestsText.length>200000 || plan.guestsText.split('\n').length>2000 || plan.configs.reduce(function(n,c){return n+Number(c.count||0);},0)>200) throw new Error('This plan is too large.');
+            if (plan.configs.some(function(c){return !layouts.includes(c.layout)||!Number.isInteger(c.count)||c.count<1||c.count>30;})) throw new Error('Invalid table configuration.');
+            function point(p){return {x:Math.max(0,Math.min(20000,Number(p&&p.x)||0)),y:Math.max(0,Math.min(20000,Number(p&&p.y)||0))};}
+            configList.replaceChildren();
+            plan.configs.forEach(function(c){var row=configTemplate.content.firstElementChild.cloneNode(true);row.querySelector('[data-seating-layout]').value=c.layout;row.querySelector('[data-seating-table-count]').value=c.count;configList.append(row);});
+            guestInput.value=plan.guestsText;pairsInput.value=String(plan.pairsText||'').slice(0,30000);conflictsInput.value=String(plan.conflictsText||'').slice(0,30000);stageCountInput.value=Math.max(0,Math.min(40,Number(plan.stageCount)||0));aisleCountInput.value=Math.max(0,Math.min(40,Number(plan.aisleCount)||0));state.planObjects=[];
+            rebuild(false);
+            (Array.isArray(plan.tables)?plan.tables:[]).slice(0,200).forEach(function(t){var table=getTableById(state,t.id);if(table){table.position=point(t.position);table.area=t.area==='annex'?'annex':'main';table.collapsed=t.collapsed===true;}});
+            (Array.isArray(plan.assignments)?plan.assignments:[]).slice(0,2000).forEach(function(a){if(findGuest(state,a.guestId)&&findSeat(state,a.seatId))moveGuestToSeat(state,a.guestId,a.seatId);});
+            (Array.isArray(plan.objects)?plan.objects:[]).slice(0,100).forEach(function(o,i){var type=['sahne','dans','muzik','hediye','orkestra','bar','foto','giris','kokteyl','ozel'].includes(o.type)?o.type:'ozel';var obj=createPlanObject(type,String(o.label||'').slice(0,100),i,root);obj.position=point(o.position);obj.area=o.area==='annex'?'annex':'main';state.planObjects.push(obj);});
+            render(root,state);
+        }
+        root.wkPlanner={snapshot:snapshot,restore:restore};
+        var selectedGuest=null;
+        function activate(target){
+            var seat=target.closest('[data-seat-id]');
+            if(selectedGuest&&seat){moveGuestToSeat(state,selectedGuest,seat.getAttribute('data-seat-id'));selectedGuest=null;render(root,state);return;}
+            var guest=target.closest('[data-guest-id]');
+            if(guest){selectedGuest=guest.getAttribute('data-guest-id');root.querySelectorAll('.wk-selected-guest').forEach(function(n){n.classList.remove('wk-selected-guest');});guest.classList.add('wk-selected-guest');}
+        }
+        root.addEventListener('click',function(e){activate(e.target);});
+        root.addEventListener('keydown',function(e){if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-guest-id],[data-seat-id]')){e.preventDefault();activate(e.target);}});
 
 		rebuild(true);
 	});

@@ -1,27 +1,18 @@
 import { findAnswers } from './wedding-info-data.js';
-const form=document.getElementById('bb-info-form');
-const input=document.getElementById('bb-info-question');
-const output=document.getElementById('bb-info-answer');
-const topics=document.getElementById('bb-guide-topics');
-const status=document.getElementById('bb-guide-status');
-let entries=[];
-function el(tag,text,className){const node=document.createElement(tag);if(text)node.textContent=text;if(className)node.className=className;return node;}
-function addLinks(parent,entry){entry.links.forEach(link=>{const a=el('a',link.label+' →');a.href=link.href;a.style.display='inline-block';a.style.marginRight='18px';parent.append(a);});}
+const form=document.getElementById('bb-info-form'),input=document.getElementById('bb-info-question'),output=document.getElementById('bb-info-answer'),topics=document.getElementById('bb-guide-topics'),status=document.getElementById('bb-guide-status'),submit=form.querySelector('button');
+let entries=[],busy=false;
+function el(tag,text,className){const n=document.createElement(tag);if(text)n.textContent=text;if(className)n.className=className;return n;}
+function addLinks(parent,entry){for(const link of entry.links||[]){const a=el('a',link.label+' →');a.href=link.href;a.style.display='inline-block';a.style.marginRight='16px';parent.append(a);}}
+function greeting(){output.replaceChildren(el('div','Hello! I’m your Way to Knot wedding planning guide. Ask about budgets, venues, attire, food, guests or timelines, and we’ll find a useful place to start.','wk-chat-message'));}
+function controls(){submit.disabled=busy||!input.value.trim()||!entries.length;}
 function answer(question){
-  output.replaceChildren();output.append(el('p','You asked: '+question,'bb-asked'));
-  if(!entries.length){output.append(el('p','The wedding guide is still loading. Please try again shortly.'));return;}
-  const matches=findAnswers(question,entries);
-  if(!matches.length){output.append(el('h2','Let’s find your starting point'),el('p','Try a question about budgets, venues, timelines, bridal wear, guest outfits, gifts, photography, food, flowers, music or seating. You can also choose a topic below.'));}
-  matches.forEach(entry=>{const article=el('article');article.append(el('h2',entry.title),el('p',entry.answer));addLinks(article,entry);output.append(article);});
-  output.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'nearest'});
+ if(busy||!entries.length)return;busy=true;controls();output.append(el('div',question,'wk-chat-message user'));
+ const matches=findAnswers(question,entries),bubble=el('div',undefined,'wk-chat-message');
+ if(matches.length){for(const entry of matches){const article=el('article');article.append(el('h3',entry.title),el('p',entry.answer));addLinks(article,entry);bubble.append(article);}}
+ else{bubble.append(el('p','I can help you explore budgets, venues, timelines, clothing, gifts, food, flowers, music and seating. Try naming one of these topics and adding your main question. For a budget tailored to your guest count, create a personal wedding plan below.'));}
+ output.append(bubble);while(output.children.length>31)output.firstElementChild.remove();input.value='';busy=false;controls();output.scrollTop=output.scrollHeight;input.focus();
 }
-form.addEventListener('submit',event=>{event.preventDefault();const question=input.value.trim();if(question)answer(question);});
-input.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();form.requestSubmit();}});
-document.querySelectorAll('[data-question]').forEach(button=>button.addEventListener('click',()=>{input.value=button.dataset.question;answer(input.value);}));
-async function load(){
-  try{
-    const response=await fetch('assets/wedding-guide.json');if(!response.ok)throw new Error();entries=await response.json();topics.replaceChildren();
-    entries.forEach(entry=>{const detail=el('details');detail.append(el('summary',entry.title),el('p',entry.answer));addLinks(detail,entry);topics.append(detail);});status.textContent='';
-  }catch{status.replaceChildren(el('span','The guide could not be loaded. '));const retry=el('button','Try again','bb-button');retry.type='button';retry.addEventListener('click',load);status.append(retry);}
-}
-load();
+form.addEventListener('submit',e=>{e.preventDefault();const q=input.value.trim();if(q)answer(q);});input.addEventListener('input',controls);input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();if(!submit.disabled)form.requestSubmit();}});
+document.getElementById('wk-clear-chat').addEventListener('click',()=>{greeting();input.value='';controls();input.focus();});
+async function load(){try{const r=await fetch('/assets/wedding-guide.json');if(!r.ok)throw Error();entries=await r.json();topics.replaceChildren();for(const entry of entries){const d=el('details');d.append(el('summary',entry.title),el('p',entry.answer));addLinks(d,entry);topics.append(d);}status.textContent='';controls();}catch{status.replaceChildren(el('span','The guide could not be loaded. '));const retry=el('button','Try again','bb-button');retry.type='button';retry.onclick=load;status.append(retry);}}
+greeting();controls();load();

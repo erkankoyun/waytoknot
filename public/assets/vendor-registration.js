@@ -1,0 +1,11 @@
+(function(){
+'use strict';
+const form=document.getElementById('wk-vendor-form');if(!form)return;
+const first=document.getElementById('wk-vendor-step-one'),second=document.getElementById('wk-vendor-step-two'),status=document.getElementById('vendor-status'),category=document.getElementById('vendor-category'),city=document.getElementById('vendor-city'),other=document.getElementById('vendor-other-city');
+city.addEventListener('change',()=>{const on=city.value==='Other US city';document.getElementById('vendor-other-city-wrap').hidden=!on;other.required=on;});
+fetch('/assets/wedding-categories.json').then(r=>{if(!r.ok)throw Error();return r.json();}).then(data=>{const values=Array.isArray(data)?data:data.categories||[];for(const c of values){const o=document.createElement('option');o.value=c.id;o.textContent=c.label||c.name;category.append(o);}}).catch(()=>{status.textContent='Categories could not be loaded. Please reload this page.';});
+document.getElementById('vendor-next').onclick=()=>{for(const field of first.querySelectorAll('input,select'))if(!field.checkValidity()){field.reportValidity();return;}first.hidden=true;second.hidden=false;document.getElementById('vendor-contact').focus();};
+form.addEventListener('keydown',e=>{if(e.key==='Enter'&&!first.hidden&&e.target.tagName!=='SELECT'){e.preventDefault();document.getElementById('vendor-next').click();}});
+document.getElementById('vendor-back').onclick=()=>{second.hidden=true;first.hidden=false;};
+form.addEventListener('submit',async e=>{e.preventDefault();if(!form.reportValidity())return;const button=second.querySelector('[type=submit]');button.disabled=true;status.textContent='Submitting your business request…';const data=Object.fromEntries(new FormData(form));data.consent=!!data.consent;if(data.city==='Other US city')data.city=data.other_city;try{const r=await fetch('/api/vendor-inquiry',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const result=await r.json();if(!r.ok)throw Error(result.error||'Your request could not be saved. Please try again.');status.textContent='Your business request has been saved for review. Reference: '+result.reference+'.';form.hidden=true;}catch(error){status.textContent=error.message+' Your entries remain here so you can retry.';}finally{button.disabled=false;}});
+})();
