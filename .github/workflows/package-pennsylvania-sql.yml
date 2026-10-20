@@ -1,4 +1,5 @@
 name: Package Pennsylvania D1 SQL 1000-row batches
+# Generated package: 1000 rows per SQL file
 on:
   push:
     paths:
