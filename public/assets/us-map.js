@@ -18,9 +18,14 @@ function init(){
   $('gelincicegi-detailRating').textContent='';detail.querySelector('.star').hidden=true;
   $('gelincicegi-detailAddress').textContent=v.address||v.city+', '+v.state+' · Approximate city location';
   $('gelincicegi-detailPhone').textContent=v.phone||'Phone not provided';$('gelincicegi-detailDescription').textContent=v.description||'';
-  $('gelincicegi-detailStatus').textContent='Confirm hours and availability with the vendor';
+  const hours=$('gelincicegi-detailHours');hours.replaceChildren();
+  const lines=Array.isArray(v.openingHours)?v.openingHours.filter(x=>typeof x==='string').slice(0,14):[];
+  $('gelincicegi-detailStatus').textContent=lines.length?'Published business hours':'Hours not provided by this business';
+  for(const line of lines)hours.append(el('div','wk-hours-line',line));
+  if(lines.length){hours.append(el('p','wk-details-note','Local business time. Holiday hours and appointments may differ.'));}
+  const source=safeUrl(v.detailsSource);if(source){const a=el('a','wk-details-source','Official website · photos and business details');a.href=source;a.target='_blank';a.rel='noopener noreferrer';hours.append(a);if(v.detailsCheckedAt)hours.append(el('p','wk-details-note','Last checked: '+v.detailsCheckedAt));}
   $('gelincicegi-detailOffer').textContent='Map pins use city or service-area coordinates. Confirm the exact business address before travelling.';
-  const image=$('gelincicegi-detailImage');image.replaceChildren(el('span','',v.name.slice(0,1)));image.classList.add('map-detail-icon');
+  renderGallery(v);
   $('gelincicegi-btnDirections').onclick=()=>directions(v);
   $('gelincicegi-btnWebsite').disabled=!safeUrl(v.url);$('gelincicegi-btnWebsite').onclick=()=>external(v.url);
   const phone=String(v.phone||'').replace(/[^+\d]/g,'');$('gelincicegi-btnCall').disabled=!phone;$('gelincicegi-btnCall').onclick=()=>{if(phone)location.href='tel:'+phone;};
@@ -28,6 +33,30 @@ function init(){
   const u=new URL(location.href);u.searchParams.set('vendor',v.id);history.replaceState(null,'',u);
   if(map&&valid(v)){map.flyTo(v.coords,11);map.once('moveend',()=>map.panBy([innerWidth>768?220:0,innerWidth<=768?-host.clientHeight*.24:0],{animate:false}));}
   if(focus)$('gelincicegi-closeDetailBtn').focus();
+  if(!v.detailsCheckedAt||Date.now()-Date.parse(v.detailsCheckedAt)>7*86400000){
+   $('gelincicegi-detailStatus').textContent='Checking published business details…';
+   fetch('/api/vendor-details?id='+encodeURIComponent(v.id)).then(async r=>{if(!r.ok)throw Error();return r.json();}).then(data=>{
+    Object.assign(v,data);if(selected?.id!==v.id)return;
+    $('gelincicegi-detailStatus').textContent=v.openingHours?.length?'Published business hours':'Hours not provided by this business';
+    hours.replaceChildren();for(const line of v.openingHours||[])hours.append(el('div','wk-hours-line',line));
+    if(v.openingHours?.length)hours.append(el('p','wk-details-note','Local business time. Holiday hours and appointments may differ.'));
+    if(data.detailsSource){const link=el('a','wk-details-source','Source: official business website');link.href=data.detailsSource;link.target='_blank';link.rel='noopener noreferrer';hours.append(link);}
+    if(data.notice)hours.append(el('p','wk-details-note',data.notice));renderGallery(v);
+   }).catch(()=>{if(selected?.id===v.id)$('gelincicegi-detailStatus').textContent=v.openingHours?.length?'Published business hours':'Hours unavailable · please check the official website';});
+  }
+
+ }
+ function renderGallery(v){
+  const host=$('gelincicegi-detailImage');host.replaceChildren();host.classList.remove('map-detail-icon');
+  const photos=[...new Set((Array.isArray(v.images)?v.images:[]).filter(x=>typeof x==='string'&&safeUrl(x)&&/^https:/.test(x)))].slice(0,12);
+  if(!photos.length){host.classList.add('map-detail-icon');host.append(el('span','',v.name.slice(0,1)),el('small','wk-photo-empty','No published photo available'));return;}
+  let index=0;const img=el('img','wk-business-photo');img.alt=v.name+' — photo from the official business website';img.referrerPolicy='no-referrer';img.decoding='async';
+  const label=el('span','wk-photo-count');label.setAttribute('aria-live','polite');
+  const prev=el('button','slider-arrow slider-prev','‹'),next=el('button','slider-arrow slider-next','›');prev.type=next.type='button';prev.setAttribute('aria-label','Previous business photo');next.setAttribute('aria-label','Next business photo');
+  function show(){img.hidden=false;img.src=photos[index];label.textContent=(index+1)+' / '+photos.length;}
+  prev.onclick=()=>{index=(index+photos.length-1)%photos.length;show();};next.onclick=()=>{index=(index+1)%photos.length;show();};
+  img.onerror=()=>{img.hidden=true;label.textContent='Photo unavailable · '+(index+1)+' / '+photos.length;};
+  host.append(img,label);if(photos.length>1)host.append(prev,next);show();
  }
  function close(){detail.classList.add('hidden');detail.setAttribute('aria-hidden','true');detail.setAttribute('inert','');const u=new URL(location.href);u.searchParams.delete('vendor');history.replaceState(null,'',u);query.focus();selected=null;}
  $('gelincicegi-closeDetailBtn').onclick=close;detail.setAttribute('inert','');document.addEventListener('keydown',e=>{if(e.key==='Escape'&&selected)close();});

@@ -73,3 +73,10 @@ test('explicit unverified publication is searchable without inventing a review a
  assert.equal(sql.prepare('SELECT status FROM directory_records').get()?.status,'approved');
  sql.close();invalidateDirectoryMetadata();
 });
+
+test('business details retain published photos and hours while rejecting unsafe media',()=>{
+ const record={...vendors[0],images:['https://cdn.example.com/store.jpg'],openingHours:['Monday: 09:00–17:00'],detailsSource:vendors[0].url,detailsCheckedAt:'2026-10-20'};
+ assert.deepEqual(validateDirectoryRecord(record).openingHours,record.openingHours);
+ for(const image of ['javascript:alert(1)','http://cdn.example.com/a.jpg','https://127.0.0.1/a','https://user:secret@example.com/a'])assert.throws(()=>validateDirectoryRecord({...record,images:[image]}));
+ assert.throws(()=>validateDirectoryRecord({...record,openingHours:new Array(15).fill('Monday')}));
+});

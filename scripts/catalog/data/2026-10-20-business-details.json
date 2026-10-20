@@ -1,0 +1,299 @@
+[
+  {
+    "id": "lovely-atlanta-bridal-shop",
+    "images": [
+      "https://lovelybride.com/wp-content/uploads/2016/05/location-main-atlanta-2.jpg"
+    ],
+    "detailsSource": "https://lovelybride.com/stores/atlanta-bridal-shop/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "lovely-charleston-bridal-shop",
+    "images": [
+      "https://lovelybride.com/wp-content/uploads/2016/04/Charleston-Shop.png"
+    ],
+    "detailsSource": "https://lovelybride.com/stores/charleston-bridal-shop/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "lovely-charlotte-bridal-shop",
+    "images": [
+      "https://lovelybride.com/wp-content/uploads/2016/03/Charlotte-hero-scaled.jpg"
+    ],
+    "detailsSource": "https://lovelybride.com/stores/charlotte-bridal-shop/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "lovely-chicago-bridal-shop",
+    "images": [
+      "https://lovelybride.com/wp-content/uploads/2016/03/lovely-bride-chicago-main.jpg"
+    ],
+    "detailsSource": "https://lovelybride.com/stores/chicago-bridal-shop/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "lovely-cincinnati-bridal-shop",
+    "images": [
+      "https://lovelybride.com/wp-content/uploads/2016/02/location-main-cincinnati.jpg"
+    ],
+    "detailsSource": "https://lovelybride.com/stores/cincinnati-bridal-shop/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "lovely-dallas-bridal-shop",
+    "images": [
+      "https://lovelybride.com/wp-content/uploads/2016/01/Lovely-Dallas-Hero-1.jpg"
+    ],
+    "detailsSource": "https://lovelybride.com/stores/dallas-bridal-shop/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "lovely-houston-bridal-shop",
+    "images": [
+      "https://lovelybride.com/wp-content/uploads/2015/11/Miami-Meta-Ads-Carousel-1.png"
+    ],
+    "detailsSource": "https://lovelybride.com/stores/houston-bridal-shop/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "lovely-los-angeles-bridal-shop",
+    "images": [
+      "https://lovelybride.com/wp-content/uploads/2015/10/LA-Horizontal-Hero-1.jpg"
+    ],
+    "detailsSource": "https://lovelybride.com/stores/los-angeles-bridal-shop/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "lovely-los-gatos-bridal-shop",
+    "images": [
+      "https://lovelybride.com/wp-content/uploads/2015/06/LOCATION-SF1.jpg"
+    ],
+    "detailsSource": "https://lovelybride.com/stores/los-gatos-bridal-shop/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "lovely-miami-bridal-shop",
+    "images": [
+      "https://lovelybride.com/wp-content/uploads/2015/09/Miami-Meta-Ads-Carousel.png"
+    ],
+    "detailsSource": "https://lovelybride.com/stores/miami-bridal-shop/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "lovely-new-york-city-bridal-shop",
+    "images": [
+      "https://lovelybride.com/wp-content/uploads/2015/06/rue-de-seine-lovely-bridal-72.jpg"
+    ],
+    "detailsSource": "https://lovelybride.com/stores/new-york-city-bridal-shop/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "lovely-philadelphia-bridal-shop",
+    "images": [
+      "https://lovelybride.com/wp-content/uploads/2015/07/Lovely-Philly-2025-Hero-1.jpg"
+    ],
+    "detailsSource": "https://lovelybride.com/stores/philadelphia-bridal-shop/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "lovely-phoenix-bridal-shop",
+    "images": [
+      "https://lovelybride.com/wp-content/uploads/2015/06/Lovely-Phoenix-Featured-Photo.jpg"
+    ],
+    "detailsSource": "https://lovelybride.com/stores/phoenix-bridal-shop/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "lovely-providence-bridal-shop",
+    "images": [
+      "https://lovelybride.com/wp-content/uploads/2015/06/Lovely-Providence-hero.jpg"
+    ],
+    "detailsSource": "https://lovelybride.com/stores/providence-bridal-shop/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "lovely-rochester-bridal-shop",
+    "images": [
+      "https://lovelybride.com/wp-content/uploads/2015/05/img-6357.jpg"
+    ],
+    "detailsSource": "https://lovelybride.com/stores/rochester-bridal-shop/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "lovely-san-diego-bridal-shop",
+    "images": [
+      "https://lovelybride.com/wp-content/uploads/2015/04/lovely-bride-san-diego-main.jpg"
+    ],
+    "detailsSource": "https://lovelybride.com/stores/san-diego-bridal-shop/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "lovely-seattle-bridal-shop",
+    "images": [
+      "https://lovelybride.com/wp-content/uploads/2015/02/Seattle-Location-Hover-Image.jpg"
+    ],
+    "detailsSource": "https://lovelybride.com/stores/seattle-bridal-shop/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "lovely-washington-dc-bridal-shop",
+    "images": [
+      "https://lovelybride.com/wp-content/uploads/2015/01/lovely-dc-main.jpg"
+    ],
+    "detailsSource": "https://lovelybride.com/stores/washington-dc-bridal-shop/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "hall-of-springs",
+    "images": [
+      "https://hallofsprings.com/assets/photos/hall-of-springs-social-media.jpg"
+    ],
+    "detailsSource": "https://hallofsprings.com/saratogaweddings",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "oheka",
+    "images": [
+      "https://www.oheka.com/files/5703/OHEKA_Hero_Lg_Cropped.jpg",
+      "https://www.oheka.com/files/5703/0447_Melius_2019_08_11.jpg"
+    ],
+    "detailsSource": "https://www.oheka.com/weddings.htm",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "susan-stripling",
+    "images": [
+      "https://susanstripling.com/wp-content/uploads/2023/10/Secret-Places-to-Take-Pictures-in-NYC-beekman-2.jpg"
+    ],
+    "detailsSource": "https://susanstripling.com/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "jose-villa",
+    "images": [
+      "https://images-pw.pixieset.com/site/2vr1QL/RZK9Pw/priyankacover-4969d5dd-1500.jpg"
+    ],
+    "detailsSource": "https://www.josevilla.com/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "great-performances",
+    "images": [
+      "https://greatperformances.com/wp-content/uploads/2025/12/About-Us_Great-Performances_Fall-Winter-2025-26-Catering-Menu_Dessert_Matcha-Meringue-1_horizontal-hero-1200x675.webp"
+    ],
+    "detailsSource": "https://greatperformances.com/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "bbg",
+    "images": [
+      "https://www.bbg.org/img/uploads/hero/_list_thumbnail_retina/wedding-at-garden_levkuperman.jpg"
+    ],
+    "detailsSource": "https://www.bbg.org/visit/weddings",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "foundry",
+    "images": [
+      "https://images.squarespace-cdn.com/content/v1/534ee0fee4b0245ee2fd2a6f/1505931951378-IFKIWZ8OBN88R7YW7MHW/foundry.png"
+    ],
+    "detailsSource": "https://www.thefoundry.info/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "birch-hill-estate",
+    "images": [
+      "https://birchhillcatering.com/wp-content/uploads/2022/12/circle-logo.png"
+    ],
+    "detailsSource": "https://birchhillcatering.com/birch-hill-estate/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "conway-entertainment",
+    "images": [
+      "https://images.squarespace-cdn.com/content/v1/692f5d7cf9a01f48c203b627/f93b2ead-ca62-49fa-ab35-e820036cf9c8/conway-logo-text-only.png"
+    ],
+    "detailsSource": "https://www.conwayentertainment.com/weddings",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "nwn-entertainment",
+    "images": [
+      "https://nwnentertainment.com/wp-content/uploads/2023/10/1419.jpg",
+      "https://nwnentertainment.com/uploads/og-school-events.jpg"
+    ],
+    "detailsSource": "https://nwnentertainment.com/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "true-beauty-company",
+    "images": [
+      "https://static.wixstatic.com/media/3db337_047dfb37ac894b2794cec66b00091373~mv2.jpg/v1/fill/w_969,h_978,al_c/3db337_047dfb37ac894b2794cec66b00091373~mv2.jpg"
+    ],
+    "detailsSource": "https://www.truebeautycompany.com/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "katie-o-events",
+    "images": [
+      "https://images.squarespace-cdn.com/content/v1/61aa0304dfa985031012a55e/6c1cac15-d4e6-44d1-8ed8-011af42f7cab/KOWE+White+Logo.png"
+    ],
+    "detailsSource": "https://www.katieoevents.com/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "pearl-grant-richmans",
+    "images": [
+      "https://www.pearlgrant.com/cdn/shop/files/PGR_Hero_cadeaux1920x500_37c81ca3-03b0-4f84-8f76-a06f7b37cbf4_2419x630.jpg?v=1614880817",
+      "https://www.pearlgrant.com/cdn/shop/files/PGR_Hero_cadeaux1920x500_37c81ca3-03b0-4f84-8f76-a06f7b37cbf4_1200x600_crop_center.jpg?v=1614880817"
+    ],
+    "detailsSource": "https://www.pearlgrant.com/collections/custom-stationery",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "flowers-by-pesha",
+    "images": [
+      "https://static.wixstatic.com/media/50afc0_3831af2c820d4a7198b87a6c34e19faf~mv2.png/v1/fill/w_500,h_500,al_c/50afc0_3831af2c820d4a7198b87a6c34e19faf~mv2.png"
+    ],
+    "detailsSource": "https://www.flowersbypesha.com/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "premiere-transportation",
+    "images": [
+      "https://cdn.prod.website-files.com/6838310011cabdeb48653a02/68751d49b3c71fe24f2586ab_Wedding%201.avif"
+    ],
+    "detailsSource": "https://www.ridepremiere.com/services/wedding-transportation",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "waldorf-tuxedo",
+    "images": [
+      "https://waldorftuxedo.com/files/2014/04/02.jpg"
+    ],
+    "detailsSource": "https://waldorftuxedo.com/",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "gretchens-hallmark-albany",
+    "images": [
+      "https://webfileswest.uswest.os.ctl.io/corporate.hallmark.com/wp-content/uploads/2018/05/Hallmark-Logo-768x768.jpg"
+    ],
+    "openingHours": [
+      "Su 11:00 - 18:00 Mo 10:00 - 20:00 Tu 10:00 - 20:00 We 10:00 - 20:00 Th 10:00 - 20:00 Fr 10:00 - 20:00 Sa 10:00 - 20:00"
+    ],
+    "detailsSource": "https://stores.hallmark.com/ny/albany/gretchens-hallmark-shop-albany-ny-000883.html",
+    "detailsCheckedAt": "2026-10-20"
+  },
+  {
+    "id": "european-tailoring-albany",
+    "images": [
+      "https://theeuropeantailor.com/images/work-grey-hat.jpg"
+    ],
+    "openingHours": [
+      "Monday, Tuesday, Wednesday, Thursday, Friday: 09:00\u201317:00"
+    ],
+    "detailsSource": "https://theeuropeantailor.com/",
+    "detailsCheckedAt": "2026-10-20"
+  }
+]

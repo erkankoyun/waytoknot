@@ -12,6 +12,9 @@ export function validateDirectoryRecord(value:unknown):DirectoryInput {
   if(typeof v.description!=='string'||v.description.length>1500)throw Error('Invalid description');
   if(!Array.isArray(v.keywords)||v.keywords.length>40||!v.keywords.every(k=>typeof k==='string'&&k.length<=100))throw Error('Invalid keywords');
   if(v.tags&&(!Array.isArray(v.tags)||v.tags.length>30||!v.tags.every(t=>typeof t==='string'&&t.length<=100)))throw Error('Invalid tags');
+  if(v.images!==undefined&&(!Array.isArray(v.images)||v.images.length>12||!v.images.every(image=>typeof image==='string'&&image.length<=2000&&publicMediaUrl(image))))throw Error('Invalid business images');
+  if(v.openingHours!==undefined&&(!Array.isArray(v.openingHours)||v.openingHours.length>14||!v.openingHours.every(line=>typeof line==='string'&&line.length<=300)))throw Error('Invalid opening hours');
+  if(v.detailsSource!==undefined&&!publicMediaUrl(v.detailsSource))throw Error('Invalid details source');
   if(v.address&&(typeof v.address!=='string'||v.address.length>500))throw Error('Invalid address');
   if(v.publishUnverified!==undefined&&typeof v.publishUnverified!=='boolean')throw Error('Invalid publication flag');
   if(v.verification){
@@ -86,4 +89,8 @@ export async function importDirectoryRecords(db:D1Database,records:DirectoryInpu
  }
  await db.batch(statements);invalidateDirectoryMetadata();
  return {accepted:records.length,reviewed:records.filter(v=>v.verification).length,listed_unverified:records.filter(v=>!v.verification&&v.publishUnverified).length,staged:records.filter(v=>!v.verification&&!v.publishUnverified).length};
+}
+
+function publicMediaUrl(value:string){
+ try{const u=new URL(value);return u.protocol==='https:'&&!u.username&&!u.password&&u.hostname.includes('.')&&!/^([0-9.]+|localhost|.*\.localhost|.*\.local)$/.test(u.hostname);}catch{return false;}
 }

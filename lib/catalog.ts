@@ -3,6 +3,7 @@ import catalog from "./vendors.json";
 export type Vendor = {
   id: string; name: string; category: string; city: string; state: string;
   url: string; description: string; keywords: string[]; coords: number[];
+  images?: string[]; openingHours?: string[]; detailsSource?: string; detailsCheckedAt?: string;
   source: string; checkedAt: string; tags?: string[]; locationKind?: string;
 };
 export const vendors = catalog as Vendor[];
