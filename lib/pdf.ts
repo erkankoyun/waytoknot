@@ -1,17 +1,19 @@
-import { PDFDocument, rgb } from "pdf-lib";
-import fontkit from "@pdf-lib/fontkit";
-import { pdfFontBase64 } from "./pdf-font";
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { planText, type Profile } from "./planning";
 
 export async function createPlanPdf(profile: Profile) {
   const doc = await PDFDocument.create();
   doc.setTitle("Way to Knot — Wedding Plan");
   doc.setAuthor("Way to Knot");
-  doc.registerFontkit(fontkit);
-  const bytes = Uint8Array.from(atob(pdfFontBase64), char => char.charCodeAt(0));
-  const font = await doc.embedFont(bytes, { subset: true });
-  const chars = new Set(font.getCharacterSet());
-  const safe = (s: string) => Array.from(s).map(c => chars.has(c.codePointAt(0)!) ? c : "").join("");
+  // The former embedded font source is not valid UTF-8 and breaks the Worker build.
+  // Use a built-in font until a verified Unicode font asset can be restored.
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  const safe = (s: string) => s.normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/ı/g, "i").replace(/İ/g, "I")
+    .replace(/ğ/g, "g").replace(/Ğ/g, "G")
+    .replace(/ş/g, "s").replace(/Ş/g, "S")
+    .replace(/[^\x20-\x7E\n]/g, "?");
   let page = doc.addPage([595.28, 841.89]);
   let y = 785;
   const addHeader = () => { page.drawText("Way to Knot", { x: 45, y, font, size: 22, color: rgb(0.67,0.12,0.29) }); y -= 34; };
@@ -41,6 +43,6 @@ export async function createPlanPdf(profile: Profile) {
     }
   }
   const pages = doc.getPages();
-  pages.forEach((p,index)=>p.drawText(`${index+1} / ${pages.length}  •  Way to Knot`, { x: 45, y: 28, font, size: 8, color: rgb(0.45,0.45,0.45) }));
+  pages.forEach((p,index)=>p.drawText(`${index+1} / ${pages.length}  -  Way to Knot`, { x: 45, y: 28, font, size: 8, color: rgb(0.45,0.45,0.45) }));
   return doc.save();
 }
