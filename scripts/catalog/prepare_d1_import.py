@@ -4,15 +4,13 @@
 Usage:
  python scripts/catalog/prepare_d1_import.py --original /secure/path/original-export.jsonl --out-dir .catalog-work/d1-import
 
-Does not connect to D1 or change production. Requires full original 969-row export.
+Does not connect to D1 or change production. Requires full 1849-row source archive.
 Output is staged SQL only. Review before applying to waytoknot-staging.
 """
 import argparse, json, pathlib, hashlib, urllib.parse, re
 
 ROOT=pathlib.Path(__file__).resolve().parents[2]
 EXPANSION=ROOT/"scripts/catalog/data/2026-10-19-category-expansion.jsonl"
-EXPECTED_ORIGINAL=969
-EXPECTED_EXPANSION=880
 EXPECTED_TOTAL=1849
 
 def records(path):
@@ -51,14 +49,14 @@ def sql_record(r):
 
 def main():
     p=argparse.ArgumentParser();p.add_argument("--original",type=pathlib.Path,required=True);p.add_argument("--out-dir",type=pathlib.Path,required=True);a=p.parse_args()
-    old=list(records(a.original));extra=list(records(EXPANSION))
-    if len(old)!=EXPECTED_ORIGINAL or len(extra)!=EXPECTED_EXPANSION:
-        raise SystemExit(f"Count mismatch: original={len(old)} (expected 969), expansion={len(extra)} (expected 880); stopping")
-    seen=set();all_rows=[]
-    for r in old+extra:
+    all_rows=list(records(a.original))
+    if len(all_rows)!=EXPECTED_TOTAL:
+        raise SystemExit(f"Count mismatch: source={len(all_rows)} (expected 1849); stopping")
+    seen=set()
+    for r in all_rows:
         k=key(r)
         if k in seen:raise SystemExit(f"Duplicate id {k}; stopping")
-        seen.add(k);all_rows.append(r)
+        seen.add(k)
     if len(all_rows)!=EXPECTED_TOTAL:raise SystemExit("Incomplete archive")
     # No SQL is generated until completeness/format checks pass.
     statements=[sql_record(r) for r in all_rows]
@@ -66,6 +64,6 @@ def main():
     for i in range(0,len(statements),50):
         dest=a.out_dir/f"batch-{i//50+1:03d}.sql"
         dest.write_text("\n".join(statements[i:i+50])+"\n",encoding="utf-8")
-    print(json.dumps({"source_original":len(old),"source_expansion":len(extra),"total":len(all_rows),"batches":(len(all_rows)+49)//50,"destination":str(a.out_dir)},indent=2))
+    print(json.dumps({"source_archive":len(all_rows),"total":len(all_rows),"batches":(len(all_rows)+49)//50,"destination":str(a.out_dir)},indent=2))
     print("IMPORTANT: Review the source export, category provenance and deduplication. These batches do not alter your database until explicitly applied.")
 if __name__=="__main__":main()
