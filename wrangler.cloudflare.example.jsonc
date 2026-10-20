@@ -9,7 +9,7 @@
     {
       "binding": "DB",
       "database_name": "waytoknot-staging",
-      "database_id": "REPLACE_WITH_REAL_D1_DATABASE_ID"
+      "database_id": "8263ffde-ce86-45c9-9fe2-e0221e2d3cdc"
     }
   ]
 }
