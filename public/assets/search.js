@@ -12,13 +12,32 @@
     results.className = 'gc-results'; results.setAttribute('aria-label', 'Vendor search results');
     column.appendChild(results);
     const forms = Array.from(document.querySelectorAll('form.tx-solr-search-form, form[id="tx-solr-search-form-pi-results"]')).filter(f => f.querySelector('[name="q"]'));
-    let state = new URLSearchParams(location.search);
+    // Keep only application search parameters. External attribution such as
+    // utm_source must never leak into an in-site search URL or API request.
+    const allowedParams = ['q', 'category', 'city', 'page', 'radius', 'suggest'];
+    function cleanSearchParams(search) {
+      const incoming = new URLSearchParams(search);
+      const cleaned = new URLSearchParams();
+      allowedParams.forEach(key => {
+        if (incoming.has(key)) cleaned.set(key, incoming.get(key));
+      });
+      return cleaned;
+    }
+    let state = cleanSearchParams(location.search);
+    function canonicalizeSearchUrl() {
+      const query = state.toString();
+      const destination = '/search' + (query ? '?' + query : '') + location.hash;
+      if (location.pathname + location.search + location.hash !== destination) {
+        history.replaceState(null, '', destination);
+      }
+    }
+    canonicalizeSearchUrl();
     let controller;
     function el(tag, className, content) { const node = document.createElement(tag); if (className) node.className = className; if (content != null) node.textContent = content; return node; }
     function url() { return '/api/search?' + state.toString(); }
     function navigate(changes) {
       Object.keys(changes).forEach(key => changes[key] ? state.set(key, changes[key]) : state.delete(key));
-      const next = 'search.html' + (state.toString() ? '?' + state : '');
+      const next = '/search' + (state.toString() ? '?' + state.toString() : '');
       history.pushState(null, '', next); run();
     }
     function addSelect(parent, label, key, values) {
@@ -160,7 +179,8 @@
       }).catch(()=>{browser.hidden=true;});
     }
     window.addEventListener('popstate',()=>{
-      state=new URLSearchParams(location.search);
+      state=cleanSearchParams(location.search);
+      canonicalizeSearchUrl();
       if(state.has('q')||state.has('city')||state.has('category'))run();
       else {
         ++requestId;if(controller)controller.abort();
