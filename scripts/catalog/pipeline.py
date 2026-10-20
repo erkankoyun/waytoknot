@@ -26,7 +26,27 @@ def fetch(url,max_bytes=600000):
   return response.geturl(),response.headers.get('Content-Type',''),content.decode('utf-8',errors='replace')
 
 def category(source):
- patterns=[('barber','barber'),('hair_salon','hairsalon'),('beauty_salon','beauty'),('nail','nails'),('^jewelry_store$|^jewelry_repair_service$','jeweler'),('bakery','cake'),('gift','gifts'),('florist','florist'),('wedding_venue|wedding_chapel','venue'),('wedding_plann|event_plann','planner'),('bridal','bridal'),('tuxedo|^mens_clothing_store$|^formal_wear_store$','groom'),('photography_service','photography'),('cater','catering'),('disc_jockey','dj'),('limousine','transportation'),('party_supply','rental')]
+ patterns=[
+ ('barber','barber'),('hair_salon|hairdresser','hairsalon'),('makeup_art','makeup'),
+ ('nail','nails'),('spa|massage','spa'),('beauty_salon','beauty'),
+ ('jewel','jeweler'),('bakery|cake_shop','cake'),('chocolate|dessert','sweets'),
+ ('gift_shop','gifts'),('florist|flower_shop','florist'),('wedding_venue|wedding_chapel|banquet_hall|event_venue','venue'),
+ ('wedding_plann|event_plann','planner'),('wedding_officiant|officiant','officiant'),
+ ('bridal','bridal'),('tuxedo|^mens_clothing_store$|^formal_wear_store$','groom'),
+ ('tailor|alteration','alterations'),('shoe_store','shoes'),
+ ('photography_service|photographer','photography'),('videograph|video_production','videography'),
+ ('photo_booth','photobooth'),('cater','catering'),('food_truck','foodtruck'),
+ ('disc_jockey|^dj$','dj'),('wedding_band|musician|live_music','band'),
+ ('limousine|limo_service','transportation'),('party_rental|event_rental|tent_rental','rental'),
+ ('event_decor|balloon','decor'),('lighting_service|stage_equipment','lighting'),
+ ('stationery_store|invitation_print','stationery'),('sign_shop|printing_service','signage'),
+ ('hotel|lodging','hotel'),('travel_agency','travel'),('dance_school|dance_studio','dance'),
+ ('child_care|babysit','childcare'),('pet_sit|pet_care','petcare'),
+ ('event_staff','eventstaff'),('security_service','security'),('cleaning_service','cleaning'),
+ ('mobile_bar|bartend','barservice'),('wedding_favor','favors'),
+ ('wedding_accessories|bridal_accessor','accessories'),('formal_wear|formalwear','formalwear'),
+ ('entertainment_agency|party_entertain','entertainment')]
+
  return next((dest for pattern,dest in patterns if re.search(pattern,source)),None)
 
 def candidate(row):
