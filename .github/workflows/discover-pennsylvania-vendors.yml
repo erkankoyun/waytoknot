@@ -1,5 +1,8 @@
 name: Discover Pennsylvania wedding vendors
 on:
+  push:
+    paths:
+      - '.github/workflows/discover-pennsylvania-vendors.yml'
   workflow_dispatch:
 permissions:
   contents: read
