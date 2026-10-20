@@ -1,0 +1,36 @@
+name: Package Pennsylvania D1 SQL 250-row batches
+# Continue safely on free D1 plan
+on:
+  push:
+    paths:
+      - '.github/workflows/package-pennsylvania-250-sql.yml'
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download Pennsylvania discovery results
+        run: |
+          mkdir -p .catalog-work
+          gh run download 39436057949 --repo "${{ github.repository }}" --name waytoknot-pennsylvania-discovery --dir .catalog-work
+          test -s .catalog-work/queue.sqlite
+      - name: Generate 250-business SQL parts without changing D1
+        run: |
+          python scripts/catalog/package_state_sql.py --db .catalog-work/queue.sqlite --out-dir .catalog-work/pennsylvania-d1-250 --expected 37402 --batch-size 250
+      - name: Upload SQL and Windows import package
+        uses: actions/upload-artifact@v4
+        with:
+          name: waytoknot-pennsylvania-250-sql
+          path: .catalog-work/pennsylvania-d1-250/
+          retention-days: 7
+          if-no-files-found: error
