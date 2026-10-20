@@ -1,0 +1,46 @@
+name: Discover Pennsylvania wedding vendors
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install discovery dependencies
+        run: python -m pip install -r scripts/catalog/requirements.txt
+      - name: Discover PA candidate businesses from Overture
+        run: |
+          mkdir -p .catalog-work
+          python scripts/catalog/discover_overture.py --state PA --bbox=-80.6,39.6,-74.6,42.6 --limit 0 --output .catalog-work/pennsylvania-candidates.jsonl
+      - name: Build deduplicated review queue
+        run: |
+          python scripts/catalog/pipeline.py ingest .catalog-work/pennsylvania-candidates.jsonl
+          python scripts/catalog/pipeline.py status
+      - name: Summarize actual category coverage
+        run: |
+          python - <<'PY'
+          import json,sqlite3,pathlib
+          folder=pathlib.Path('.catalog-work')
+          con=sqlite3.connect(folder/'queue.sqlite')
+          counts={r[0]:r[1] for r in con.execute("SELECT json_extract(payload,'$.category'),count(*) FROM queue GROUP BY 1")}
+          taxonomy=json.loads(pathlib.Path('public/assets/wedding-categories.json').read_text())
+          report={'goal':'all discoverable PA businesses in current open-data source','location':'Pennsylvania State, focus subsequent review on Capital Region','source':'Overture Maps','verification':'unreviewed candidates, website required; NOT imported to live site; not an exhaustive census of every Pennsylvania business','by_category':{c['id']:{'candidates':counts.get(c['id'],0),'candidate_count':counts.get(c['id'],0)} for c in taxonomy},'total_candidates':sum(counts.values())}
+          (folder/'pa-discovery-report.json').write_text(json.dumps(report,indent=2))
+          print(json.dumps({'total_candidates':report['total_candidates'],'categories_with_candidates':sum(bool(x['candidates']) for x in report['by_category'].values()),'categories_total':len(taxonomy)}))
+          PY
+      - name: Save candidate and coverage report (no automatic publication)
+        uses: actions/upload-artifact@v4
+        with:
+          name: waytoknot-pennsylvania-discovery
+          path: |
+            .catalog-work/pennsylvania-candidates.jsonl
+            .catalog-work/pa-discovery-report.json
+            .catalog-work/queue.sqlite
+          retention-days: 7
+          if-no-files-found: error
