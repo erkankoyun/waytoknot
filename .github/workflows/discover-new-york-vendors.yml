@@ -6,7 +6,7 @@ permissions:
 jobs:
   discover:
     runs-on: ubuntu-latest
-    timeout-minutes: 100
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -17,7 +17,7 @@ jobs:
       - name: Discover NY candidate businesses from Overture
         run: |
           mkdir -p .catalog-work
-          python scripts/catalog/discover_overture.py --state NY --bbox=-80.0,40.4,-71.8,45.1 --limit 100000 --output .catalog-work/new-york-candidates.jsonl
+          python scripts/catalog/discover_overture.py --state NY --bbox=-80.0,40.4,-71.8,45.1 --limit 0 --output .catalog-work/new-york-candidates.jsonl
       - name: Build deduplicated review queue
         run: |
           python scripts/catalog/pipeline.py ingest .catalog-work/new-york-candidates.jsonl
@@ -30,7 +30,7 @@ jobs:
           con=sqlite3.connect(folder/'queue.sqlite')
           counts={r[0]:r[1] for r in con.execute("SELECT json_extract(payload,'$.category'),count(*) FROM queue GROUP BY 1")}
           taxonomy=json.loads(pathlib.Path('public/assets/wedding-categories.json').read_text())
-          report={'goal_new_per_category':1000,'location':'New York State, focus subsequent review on Capital Region','source':'Overture Maps','verification':'unreviewed candidates; NOT imported to live site','by_category':{c['id']:{'candidates':counts.get(c['id'],0),'shortfall_to_goal':max(0,1000-counts.get(c['id'],0))} for c in taxonomy},'total_candidates':sum(counts.values())}
+          report={'goal':'all discoverable NY businesses in current open-data source','location':'New York State, focus subsequent review on Capital Region','source':'Overture Maps','verification':'unreviewed candidates, website required; NOT imported to live site; not an exhaustive census of every New York business','by_category':{c['id']:{'candidates':counts.get(c['id'],0),'candidate_count':counts.get(c['id'],0)} for c in taxonomy},'total_candidates':sum(counts.values())}
           (folder/'ny-discovery-report.json').write_text(json.dumps(report,indent=2))
           print(json.dumps({'total_candidates':report['total_candidates'],'categories_with_candidates':sum(bool(x['candidates']) for x in report['by_category'].values()),'categories_total':len(taxonomy)}))
           PY
