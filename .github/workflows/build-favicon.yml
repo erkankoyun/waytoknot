@@ -20,7 +20,8 @@ jobs:
       - name: Create real multi-resolution favicon from existing logo
         run: |
           python - <<'PY'
-          from PIL import Image
+          from PIL import Image, ImageFile
+          ImageFile.LOAD_TRUNCATED_IMAGES = True
           from pathlib import Path
           p=Path('public/assets/brand/favicon-rose.png')
           image=Image.open(p).convert('RGBA')
