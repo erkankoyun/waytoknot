@@ -9,6 +9,7 @@ export default defineConfig({
     vinext(),
     cloudflare({
       viteEnvironment: { name: "rsc", childEnvironments: ["ssr"] },
+      configPath: "./wrangler.jsonc",
     }),
   ],
 });
