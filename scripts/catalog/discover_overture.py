@@ -24,3 +24,6 @@ def main():
  a.output.parent.mkdir(parents=True,exist_ok=True)
  c.execute("COPY candidates TO '"+str(a.output).replace("'","''")+"' (FORMAT JSON)")
  print(json.dumps({'candidates':c.execute('SELECT count(*) FROM candidates').fetchone()[0],'release':release,'websites_verified':0,'output':str(a.output),'limit':a.limit or 'none'}))
+
+if __name__ == '__main__':
+ main()
