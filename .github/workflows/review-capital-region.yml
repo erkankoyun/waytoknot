@@ -1,0 +1,75 @@
+name: Review Capital Region vendor candidates
+on:
+  push:
+    paths:
+      - '.github/workflows/review-capital-region.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download archived NY discovery dataset
+        run: |
+          mkdir -p .catalog-work
+          gh run download 39425121297 --repo "${{ github.repository }}" --name waytoknot-new-york-discovery --dir .catalog-work
+          test -s .catalog-work/queue.sqlite
+      - name: Select Capital Region candidate review batch
+        run: |
+          python - <<'PY'
+          import sqlite3,json,pathlib
+          base=pathlib.Path('.catalog-work')
+          source=sqlite3.connect(base/'queue.sqlite')
+          destination=sqlite3.connect(base/'capital-review.sqlite')
+          destination.execute('CREATE TABLE queue (key TEXT PRIMARY KEY,payload TEXT NOT NULL,status TEXT NOT NULL,attempts INTEGER DEFAULT 0,reason TEXT,updated_at TEXT)')
+          cities={'albany','troy','saratoga springs','schenectady','clifton park','cohoes','latham','colonie','mechanicville','ballston spa','malta','glens falls','rensselaer','watervliet','halfmoon','east greenbush','guilderland','rotterdam','amsterdam','waterford','saratoga','queensbury'}
+          groups={}
+          for k,payload,status,attempts,reason,stamp in source.execute("SELECT key,payload,status,attempts,reason,updated_at FROM queue WHERE status='pending'"):
+              row=json.loads(payload)
+              if row.get('city','').strip().lower() not in cities: continue
+              groups.setdefault(row.get('category','other'),[]).append((k,payload,status,attempts,reason,stamp))
+          # Round-robin through categories, prioritized by discoverability rather than the biggest categories.
+          selected=[]
+          for i in range(10):
+              for category in sorted(groups):
+                  if len(groups[category])>i: selected.append(groups[category][i])
+                  if len(selected)>=180:break
+              if len(selected)>=180:break
+          destination.executemany('INSERT OR IGNORE INTO queue VALUES (?,?,?,?,?,?)',selected)
+          destination.commit()
+          print(json.dumps({'capital_region_candidates_selected':len(selected),'categories_represented':len(groups)}))
+          PY
+      - name: Check business websites (robots, name, availability)
+        run: python scripts/catalog/pipeline.py --db .catalog-work/capital-review.sqlite crawl --limit 180 --workers 4
+      - name: Save verified-versus-unverified audit
+        if: always()
+        run: |
+          python - <<'PY'
+          import sqlite3,json,pathlib,collections
+          folder=pathlib.Path('.catalog-work')
+          if not (folder/'capital-review.sqlite').exists():raise SystemExit(0)
+          con=sqlite3.connect(folder/'capital-review.sqlite')
+          counts=dict(con.execute('SELECT status,count(*) FROM queue GROUP BY status'))
+          out={'counts':counts,'note':'Website name matching is preliminary, not proof of wedding services or availability; no live database modifications'}
+          (folder/'capital-review-summary.json').write_text(json.dumps(out,indent=2))
+          print(json.dumps(out))
+          PY
+      - name: Save review results (private review stage)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: waytoknot-capital-region-review
+          path: |
+            .catalog-work/capital-review.sqlite
+            .catalog-work/capital-review-summary.json
+          retention-days: 7
+          if-no-files-found: warn
