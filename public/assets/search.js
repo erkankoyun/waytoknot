@@ -125,7 +125,54 @@
     }
     forms.forEach(form=>{
       const input=form.querySelector('[name="q"]');
-      input.placeholder='Try “outdoor venues near Albany”';
+      // Animated placeholder: examples type and erase, without altering actual user input.
+      const examples = [
+        'Wedding venues in Saratoga Springs',
+        'Photographers near Albany',
+        'Florists in Troy',
+        'Wedding planners in New York',
+        'Wedding rings near Schenectady',
+        'Caterers in Capital Region'
+      ];
+      input.placeholder = '';
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        input.placeholder = 'Search wedding vendors';
+      } else {
+        let exampleIndex = 0, letters = 0, deleting = false, tick;
+        let paused = false;
+        const animatePlaceholder = () => {
+          if (paused || document.activeElement === input || input.value) return;
+          const phrase = examples[exampleIndex];
+          letters += deleting ? -1 : 1;
+          input.placeholder = phrase.slice(0, Math.max(0, letters));
+          let delay = deleting ? 38 : 80;
+          if (!deleting && letters >= phrase.length) { deleting = true; delay = 1650; }
+          if (deleting && letters <= 0) {
+            deleting = false;
+            exampleIndex = (exampleIndex + 1) % examples.length;
+            delay = 350;
+          }
+          tick = window.setTimeout(animatePlaceholder, delay);
+        };
+        const pause = () => {
+          paused = true;
+          window.clearTimeout(tick);
+          input.placeholder = '';
+        };
+        const resume = () => {
+          if (input.value || document.activeElement === input) return;
+          paused = false;
+          window.clearTimeout(tick);
+          tick = window.setTimeout(animatePlaceholder, 450);
+        };
+        input.addEventListener('focus', pause);
+        input.addEventListener('input', () => input.value ? pause() : resume());
+        input.addEventListener('blur', resume);
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden) pause(); else resume();
+        });
+        resume();
+      }
       input.setAttribute('aria-label', 'Search by vendor, category or city');
       form.append(el('p','gc-catalog-note','Search listed US wedding vendors by service, city or business name. Try a nearby search with a city.'));
       const button=form.querySelector('[type="submit"]');if(button){button.disabled=false;button.removeAttribute('aria-disabled');}
