@@ -119,31 +119,8 @@
         beyond.append(external,document.createTextNode(' (opens an external search)'));results.append(beyond);
       } catch (error) {
         if (error.name==='AbortError'||activeRequest!==requestId) return;
-        // Emergency static index: available even if the D1 free-tier quota blocks the API.
-        try {
-          const backupResponse=await fetch('/assets/search-backup-vendors.json?v=20261020b',{cache:'force-cache'});
-          if(!backupResponse.ok)throw new Error('Backup listings unavailable');
-          const backup=await backupResponse.json();
-          if(activeRequest!==requestId)return;
-          const words=(q+' '+(state.get('category')||'')+' '+(state.get('city')||'')).toLowerCase().trim().split(/\s+/).filter(Boolean);
-          const matching=backup.filter(v=>words.every(w=>[v.name,v.category,v.city,v.state,v.description,...(v.keywords||[])].join(' ').toLowerCase().includes(w)));
-          results.replaceChildren(
-            el('h2','gc-results-title',q?'Results for “'+q+'”':'Wedding vendors'),
-            el('p','gc-search-explanation','Live database is temporarily unavailable. Showing '+matching.length+' matching listings from a small emergency backup of '+backup.length+' reviewed entries. Newly imported companies will appear when the database returns.')
-          );
-          matching.slice(0,30).forEach(v=>{
-            const card=el('article','gc-result');
-            card.append(el('p','gc-result-meta',v.category+' · '+v.city+', '+v.state));
-            const heading=el('h3');const link=el('a','',v.name);link.href=v.url;link.target='_blank';link.rel='noopener noreferrer';heading.append(link);
-            card.append(heading,el('p','',v.description||'Confirm wedding services with the business.'));
-            results.append(card);
-          });
-          if(!matching.length)results.append(el('p','gc-empty','No matches in the limited backup. Please try again when live search is available.'));
-          const retry=el('button','gc-action','Retry live search');retry.onclick=run;results.append(retry);
-        } catch {
-          results.replaceChildren(el('p','gc-error','Search is temporarily unavailable. Please try again.'));
-          const retry=el('button','gc-action','Try again');retry.onclick=run;results.append(retry);
-        }
+        results.replaceChildren(el('p','gc-error','The full vendor directory is temporarily unavailable. Please try again later.'));
+        const retry=el('button','gc-action','Try again');retry.onclick=run;results.append(retry);
       } finally { if(activeRequest===requestId)results.setAttribute('aria-busy','false'); }
     }
     forms.forEach(form=>{
