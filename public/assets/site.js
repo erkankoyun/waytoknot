@@ -1,5 +1,14 @@
 (function () {
   'use strict';
+  // Hide attribution/tracking parameters while preserving search and page state.
+  const current = new URL(window.location.href);
+  const trackingKeys = [...current.searchParams.keys()].filter(key =>
+    /^utm_/i.test(key) || /^(fbclid|gclid|gclsrc|msclkid|dclid|yclid|mc_cid|mc_eid)$/i.test(key)
+  );
+  if (trackingKeys.length) {
+    trackingKeys.forEach(key => current.searchParams.delete(key));
+    history.replaceState(history.state, '', current.pathname + current.search + current.hash);
+  }
   const header = document.querySelector('.bb-header');
   const toggle = header?.querySelector('.bb-menu-toggle');
   const links = header?.querySelector('.bb-nav-links');
