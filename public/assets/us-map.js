@@ -5,7 +5,8 @@ function init(){
  // Do not let third-party fonts, tiles or data keep the page behind a loader.
  document.getElementById('loader')?.remove();document.getElementById('app')?.classList.remove('paper-loading');
  const $=id=>document.getElementById(id),list=$('gelincicegi-placesList'),status=$('map-status'),count=$('map-count'),query=$('map-query'),chips=$('map-categories'),detail=$('gelincicegi-detailOverlay');
- let vendors=[],visible=[],labels={},category='',map=null,loaded=false,loading=false,failed=false,cursor='',limit=80,selected=null,controller=null, markerGroup=null, markerCache=new Map();
+ let vendors=[],visible=[],labels={},category=new URLSearchParams(location.search).get('category')||'',map=null,loaded=false,loading=false,failed=false,cursor='',limit=80,selected=null,controller=null, markerGroup=null, markerCache=new Map();
+ query.value=new URLSearchParams(location.search).get('q')||'';
  const normalize=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
  const valid=v=>Array.isArray(v.coords)&&v.coords.length===2&&v.coords.every(Number.isFinite)&&Math.abs(v.coords[0])<=90&&Math.abs(v.coords[1])<=180;
  const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
@@ -49,7 +50,7 @@ function init(){
   for(const v of visible){if(!valid(v)||markerCache.has(v.id))continue;const marker=L.marker(v.coords,{icon:L.divIcon({className:'map-pin',iconSize:[20,20],iconAnchor:[10,10]}),title:v.name,keyboard:true});marker.on('click',()=>open(v));markerCache.set(v.id,marker);add.push(marker);}
   markerGroup.addLayers(add);
  }
- function filter(){const q=normalize(query.value);visible=vendors.filter(v=>(!category||v.category===category)&&normalize([v.name,v.city,v.state,labels[v.category],v.category].join(' ')).includes(q));count.textContent=visible.length.toLocaleString()+' vendors'+(loading?' · loading more…':failed?' · loading interrupted':'');limit=80;drawList();if(loaded)refreshPins();}
+ function filter(){const terms=normalize(query.value).split(/\s+/).filter(Boolean);visible=vendors.filter(v=>(!category||v.category===category)&&terms.every(term=>normalize([v.name,v.city,v.state,labels[v.category],v.category].join(' ')).includes(term)));const url=new URL(location.href);if(query.value.trim())url.searchParams.set('q',query.value.trim());else url.searchParams.delete('q');if(category)url.searchParams.set('category',category);else url.searchParams.delete('category');history.replaceState(null,'',url);count.textContent=visible.length.toLocaleString()+' vendors'+(loading?' · loading more…':failed?' · loading interrupted':'');limit=80;drawList();if(loaded)refreshPins();}
  function categories(){chips.replaceChildren();for(const id of ['',...new Set(vendors.map(v=>v.category))].sort((a,b)=>!a?-1:!b?1:(labels[a]||a).localeCompare(labels[b]||b))){const chip=el('button','cat-chip'+(category===id?' active':''),id?(labels[id]||id):'All');chip.type='button';chip.setAttribute('aria-pressed',String(category===id));chip.onclick=()=>{category=id;categories();filter();fit();};chips.append(chip);}}
  function fit(){if(!map||!loaded)return;const points=visible.filter(valid);if(!points.length)return;map.fitBounds(L.latLngBounds(points.map(v=>v.coords)),{paddingTopLeft:[50,50],paddingBottomRight:[innerWidth>768?490:50,innerWidth<=768?host.clientHeight*.55:60],maxZoom:11});}
  $('map-search').onsubmit=e=>{e.preventDefault();filter();fit();};let debounce;query.addEventListener('input',()=>{clearTimeout(debounce);debounce=setTimeout(filter,180);});

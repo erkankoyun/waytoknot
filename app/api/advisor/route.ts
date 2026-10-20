@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     const window = Math.floor(now/1800);
     const ip = request.headers.get("CF-Connecting-IP") || request.headers.get("X-Forwarded-For") || "anonymous";
     const hash = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ip)));
-    const key = Array.from(hash).map(b=>b.toString(16).padStart(2,"0")).join("");
+    const key = "advisor:" + Array.from(hash).map(b=>b.toString(16).padStart(2,"0")).join("");
     const count = await db.prepare("INSERT INTO api_limits (key, window, count) VALUES (?, ?, 1) ON CONFLICT(key) DO UPDATE SET count = CASE WHEN api_limits.window = excluded.window THEN api_limits.count + 1 ELSE 1 END, window = excluded.window RETURNING count").bind(key,window).first<{count:number}>();
     if (count && count.count > 80) return json({ error: "Too many requests. Please try again in a little while." },429);
     const mode = text(body.mode,40);
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       const profile = createProfile(name);
       await db.prepare("INSERT INTO advisor_sessions (id,data,created_at,updated_at,expires_at) VALUES (?,?,?,?,?)").bind(token,JSON.stringify(profile),now,now,now+30*86400).run();
       if (Math.random() < 0.05) {
-        await db.batch([db.prepare("DELETE FROM advisor_sessions WHERE expires_at < ?").bind(now),db.prepare("DELETE FROM api_limits WHERE window < ?").bind(window-48)]);
+        await db.batch([db.prepare("DELETE FROM advisor_sessions WHERE expires_at < ?").bind(now),db.prepare("DELETE FROM api_limits WHERE key LIKE 'advisor:%' AND window < ?").bind(window-48)]);
       }
       return json(responseData({id:token,data:JSON.stringify(profile),email:null,phone:null,expires_at:now+30*86400,email_sent_at:null},profile));
     }

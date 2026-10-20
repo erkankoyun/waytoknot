@@ -55,3 +55,11 @@ test("download is a valid English PDF with Unicode name support",async()=>{
   assert.equal(pdf.getTitle(),"Way to Knot — Wedding Plan");
   await writeFile(process.env.GC_TEST_PDF_PATH || join(tmpdir(),"gelin-cicegi-test-plan.pdf"),bytes);
 });
+
+test('personal plans link to the live city directory instead of limiting recommendations to bundled vendors', () => {
+  const profile = createProfile('Albany couple');
+  for (const answer of ['Albany, NY', '150', '$30,000', 'Garden', 'Photography']) assert.equal(answerQuestion(profile, answer), '');
+  assert.match(planText(profile), /https:\/\/waytoknot.com\/search\?city=Albany/);
+  assert.doesNotMatch(planText(profile), /directory does not have vendors in this city/);
+  assert.match(guideReply(profile, 'Help with the venue'), /search\?city=Albany/);
+});
