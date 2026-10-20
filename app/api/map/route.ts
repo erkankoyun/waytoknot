@@ -9,7 +9,10 @@ export async function GET(request: Request) {
   if (!db) return Response.json({ error: 'The live directory is not connected.' }, { status: 503 });
   try {
     return Response.json(await mapDirectoryPage(db, cursor), { headers: {'Cache-Control':'public, max-age=60'} });
-  } catch {
-    return Response.json({ error:'Live vendor data is temporarily unavailable. Please retry.' }, {status:503,headers:{'Cache-Control':'no-store'}});
+  } catch (error) {
+    const message = error instanceof Error ? error.message : '';
+    const reason = /limit|quota|exceed/i.test(message) ? 'database_limit' : /JSON|Unexpected token|position/i.test(message) ? 'invalid_record' : 'database_unavailable';
+    console.error('Vendor map directory failed:', message);
+    return Response.json({ error:'Live vendor data is temporarily unavailable. Please retry.', reason }, {status:503,headers:{'Cache-Control':'no-store'}});
   }
 }
