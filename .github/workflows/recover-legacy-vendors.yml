@@ -12,12 +12,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Recover all 969 legacy published records
-        run: python scripts/catalog/recover_legacy.py --expected 969
+      - name: Recover all 1849 legacy published records
+        run: python scripts/catalog/recover_legacy.py --expected 1849
       - name: Upload source archive
         uses: actions/upload-artifact@v4
         with:
-          name: waytoknot-original-969-records
+          name: waytoknot-original-1849-records
           path: .catalog-work/original-recovery.jsonl
           retention-days: 7
           if-no-files-found: error
