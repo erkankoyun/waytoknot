@@ -31,22 +31,22 @@ def category(source):
  ('barber','barber'),('hair_salon|hairdresser','hairsalon'),('makeup_art','makeup'),
  ('nail','nails'),('spa|massage','spa'),('beauty_salon','beauty'),
  ('jewel','jeweler'),('bakery|cake_shop','cake'),('chocolate|dessert','sweets'),
- ('gift_shop','gifts'),('florist|flower_shop','florist'),('wedding_venue|wedding_chapel|banquet_hall|event_venue','venue'),
- ('wedding_plann|event_plann','planner'),('wedding_officiant|officiant','officiant'),
- ('bridal','bridal'),('tuxedo|^mens_clothing_store$|^formal_wear_store$','groom'),
+ ('gift_shop|^flowers_and_gifts_store$','gifts'),('florist|flower_shop','florist'),('wedding_venue|wedding_chapel|banquet_hall|event_venue','venue'),
+ ('wedding_plann|event_plann','planner'),('wedding_officiant|officiant|^officiating_service$','officiant'),
+ ('wedding_accessories|bridal_accessor','accessories'),('bridal','bridal'),('tuxedo|^mens_clothing_store$','groom'),
  ('tailor|alteration','alterations'),('shoe_store','shoes'),
- ('photography_service|photographer','photography'),('videograph|video_production','videography'),
+ ('photography_service|photographer','photography'),('videograph|video_production|^video_film_production$','videography'),
  ('photo_booth','photobooth'),('cater','catering'),('food_truck','foodtruck'),
- ('disc_jockey|^dj$','dj'),('wedding_band|musician|live_music','band'),
- ('limousine|limo_service','transportation'),('party_rental|event_rental|tent_rental','rental'),
- ('event_decor|balloon','decor'),('lighting_service|stage_equipment','lighting'),
- ('stationery_store|invitation_print','stationery'),('sign_shop|printing_service','signage'),
- ('hotel|lodging','hotel'),('travel_agency','travel'),('dance_school|dance_studio','dance'),
+ ('disc_jockey|^dj$|^dj_service$','dj'),('wedding_band|musician|live_music','band'),
+ ('limousine|limo_service','transportation'),('party_rental|event_rental|tent_rental|^party_equipment_rental$','rental'),
+ ('event_decor|balloon','decor'),('lighting_service|stage_equipment|^event_technology_service$|^audiovisual_equipment_rental$','lighting'),
+ ('stationery_store|invitation_print','stationery'),('sign_shop|printing_service|^calligraphy$','signage'),
+ ('hotel|lodging','hotel'),('travel_agency|^travel_agent$','travel'),('dance_school|dance_studio','dance'),
  ('child_care|babysit','childcare'),('pet_sit|pet_care','petcare'),
  ('event_staff','eventstaff'),('security_service','security'),('cleaning_service','cleaning'),
  ('mobile_bar|bartend','barservice'),('wedding_favor','favors'),
- ('wedding_accessories|bridal_accessor','accessories'),('formal_wear|formalwear','formalwear'),
- ('entertainment_agency|party_entertain','entertainment')]
+ ('formal_wear|formalwear','formalwear'),
+ ('entertainment_agency|party_entertain|^corporate_entertainment_service$|^party_character$','entertainment')]
 
  return next((dest for pattern,dest in patterns if re.search(pattern,source)),None)
 
@@ -54,10 +54,16 @@ def candidate(row):
  if row.get('category') in CATEGORIES and row.get('url'):return row
  cat=category(row.get('source_category',''))
  if not cat or not row.get('website') or not row.get('city') or not row.get('state'):return None
- state=row['state'].removeprefix('US-');url=row['website']
+ state=row['state'].removeprefix('US-');url=row['website'].strip()
  if not url.startswith(('https://','http://')):url='https://'+url
- host=(urllib.parse.urlsplit(url).hostname or '').lower().removeprefix('www.')
- if host in {'facebook.com','instagram.com','twitter.com','x.com','yelp.com','tiktok.com','google.com'}:return None
+ parsed=urllib.parse.urlsplit(url)
+ host=(parsed.hostname or '').lower().removeprefix('www.')
+ if not host or '.' not in host or parsed.username or parsed.password or parsed.port not in (None,80,443) or re.search(r'[\s<>]',url):return None
+ if host.endswith(('.local','.localhost','.invalid','.test')):return None
+ try:
+  if not ipaddress.ip_address(host).is_global:return None
+ except ValueError:pass
+ if any(host==social or host.endswith('.'+social) for social in {'facebook.com','instagram.com','twitter.com','x.com','yelp.com','tiktok.com','google.com'}):return None
  addresses=row.get('addresses',[])
  if isinstance(addresses,str):addresses=json.loads(addresses)
  address=addresses[0] if addresses else {}

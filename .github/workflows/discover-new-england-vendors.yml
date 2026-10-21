@@ -3,6 +3,9 @@ on:
   push:
     paths:
       - '.github/workflows/discover-new-england-vendors.yml'
+      - 'scripts/catalog/discover_overture.py'
+      - 'scripts/catalog/pipeline.py'
+      - 'scripts/catalog/prepare_state_import.py'
   workflow_dispatch:
 permissions:
   contents: read
