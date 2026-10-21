@@ -46,6 +46,28 @@ The existing `lib/vendors.json` seed was manually researched from official busin
 
 The category taxonomy lives in `public/assets/wedding-categories.json`. Add category mappings deliberately, not by treating every clothing shop as a tuxedo specialist or every camera shop as a wedding photographer.
 
+## Vermont, Maine and New Hampshire
+
+`.github/workflows/discover-new-england-vendors.yml` runs one bounded discovery for
+each of VT, ME and NH. It reads every source category in the state (with a website),
+then applies the existing 44-category mapper. This avoids silently omitting categories
+such as makeup artists at the source-query stage. Each report includes all 44
+categories, including zero-result categories; open-data discovery is not an exhaustive
+census and does not prove wedding services or website availability.
+
+`prepare_state_import.py --db .catalog-work/queue.sqlite --state VT --out-dir .catalog-work/import-VT`
+validates the state, duplicate IDs, repeat imports and FTS triggers in a local SQLite
+database before producing resumable 250-record SQL files. It preserves branch
+addresses and existing live records. Unreviewed records are explicitly labeled
+unverified; no review date is invented. It also supplies city rows for city searches.
+
+The workflow saves the queue, raw metadata, 44-category coverage, SQL and a Windows
+import command as an Actions artifact. It uses the catalog API only when the existing
+`CATALOG_IMPORT_TOKEN` secret is available, and separately records the API import
+outcome in `live-import-result.json`. A successful discovery job does **not** mean
+that records have been added to the live site. The SQL packages target the existing
+`waytoknot-staging` D1 database named in `wrangler.jsonc` and never create a new one.
+
 Check crawl totals with the queue status command and public import totals at `/api/catalog/status`. Local test coverage includes a separate in-memory set of 100,000 **synthetic test records**, which must never be imported into production.
 
 Explicit owner-authorized candidate publication: `python scripts/catalog/pipeline.py sync https://SITE-ORIGIN --publish-unverified`. These rows use `listed` status and show “Website not yet verified”; no review date or verification is invented. Default sync still stages candidates privately.

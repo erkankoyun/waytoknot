@@ -26,6 +26,7 @@ def fetch(url,max_bytes=600000):
   return response.geturl(),response.headers.get('Content-Type',''),content.decode('utf-8',errors='replace')
 
 def category(source):
+ source=str(source).lower()
  patterns=[
  ('barber','barber'),('hair_salon|hairdresser','hairsalon'),('makeup_art','makeup'),
  ('nail','nails'),('spa|massage','spa'),('beauty_salon','beauty'),
@@ -57,7 +58,11 @@ def candidate(row):
  if not url.startswith(('https://','http://')):url='https://'+url
  host=(urllib.parse.urlsplit(url).hostname or '').lower().removeprefix('www.')
  if host in {'facebook.com','instagram.com','twitter.com','x.com','yelp.com','tiktok.com','google.com'}:return None
- return dict(id='overture-'+row['id'],name=row['name'],category=cat,city=row['city'],state=state,country='US',url=url,source='https://explore.overturemaps.org/',sourceProvider='Overture Maps',sourceRecordId=row['id'],sourceAttribution=row.get('sources'),description='Business listed by Overture Maps; confirm wedding-related services directly.',keywords=[cat,row['city']],coords=[row['latitude'],row['longitude']],checkedAt='',locationKind='place')
+ addresses=row.get('addresses',[])
+ if isinstance(addresses,str):addresses=json.loads(addresses)
+ address=addresses[0] if addresses else {}
+ branch_address=address.get('freeform','') if isinstance(address,dict) else ''
+ return dict(id='overture-'+row['id'],name=row['name'],category=cat,city=row['city'],state=state.upper(),country='US',url=url,source='https://explore.overturemaps.org/',sourceProvider='Overture Maps',sourceRecordId=row['id'],sourceCategory=row.get('source_category'),sourceAttribution=row.get('sources'),description='Business listed by Overture Maps; confirm wedding-related services directly.',keywords=[cat,row['city']],coords=[row['latitude'],row['longitude']],checkedAt='',locationKind='place',**({'address':branch_address} if branch_address else {}))
 
 def key(v):
  p=urllib.parse.urlsplit(v['url']);normalize=lambda s:re.sub(r'\W+',' ',s.lower()).strip()

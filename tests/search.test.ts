@@ -1,6 +1,17 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {searchVendors as search,vendors} from '../lib/catalog';
+import {parseSearch,searchVendors as search,vendors} from '../lib/catalog';
+
+test('New England state names and abbreviations select state filters',()=>{
+ for(const [name,code] of [['Vermont','VT'],['Maine','ME'],['New Hampshire','NH']]){
+  const query=parseSearch(`photographers in ${name}`);
+  assert.equal(query.selectedState,code);
+  assert.deepEqual(query.queryCategories,['photography']);
+  assert.deepEqual(query.terms,['photography']);
+  assert.equal(query.correctedQuery,null);
+  assert.equal(parseSearch(`photographers ${code}`).selectedState,code);
+ }
+});
 
 test('typos and Turkish natural-language requests recover the intended category and location',()=>{
  const typo=search('photogrpher in Albany');
