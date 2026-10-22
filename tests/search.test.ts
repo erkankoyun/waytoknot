@@ -2,8 +2,8 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {parseSearch,searchVendors as search,vendors} from '../lib/catalog';
 
-test('New England state names and abbreviations select state filters',()=>{
- for(const [name,code] of [['Vermont','VT'],['Maine','ME'],['New Hampshire','NH']]){
+test('Expanded state names and abbreviations select state filters',()=>{
+ for(const [name,code] of [['Vermont','VT'],['Maine','ME'],['New Hampshire','NH'],['Massachusetts','MA'],['Florida','FL'],['Connecticut','CT'],['Rhode Island','RI'],['Delaware','DE'],['Maryland','MD']]){
   const query=parseSearch(`photographers in ${name}`);
   assert.equal(query.selectedState,code);
   assert.deepEqual(query.queryCategories,['photography']);

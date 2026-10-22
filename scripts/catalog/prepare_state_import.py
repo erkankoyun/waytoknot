@@ -12,12 +12,16 @@ import urllib.parse
 from pipeline import CATEGORIES
 from prepare_d1_import import normalize, quote, sql_record
 
-STATES = {'VT': 'Vermont', 'ME': 'Maine', 'NH': 'New Hampshire'}
+STATES = {
+    'VT': 'Vermont', 'ME': 'Maine', 'NH': 'New Hampshire',
+    'MA': 'Massachusetts', 'FL': 'Florida', 'CT': 'Connecticut',
+    'RI': 'Rhode Island', 'DE': 'Delaware', 'MD': 'Maryland',
+}
 
 
 def prepare(db_path, state, out, batch_size=250):
     if state not in STATES or not 1 <= batch_size <= 250:
-        raise ValueError('Use VT, ME or NH and batches of 1–250 records')
+        raise ValueError('Use a configured state and batches of 1–250 records')
     with sqlite3.connect(f'file:{db_path.resolve()}?mode=ro', uri=True) as db:
         queue = db.execute('SELECT payload,status FROM queue ORDER BY key').fetchall()
     if not queue:

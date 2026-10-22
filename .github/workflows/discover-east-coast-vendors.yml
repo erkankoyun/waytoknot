@@ -1,0 +1,77 @@
+name: Discover Massachusetts Florida Connecticut Rhode Island Delaware Maryland vendors
+on:
+  push:
+    paths:
+      - '.github/workflows/discover-east-coast-vendors.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: east-coast-vendor-discovery
+  cancel-in-progress: false
+jobs:
+  discover:
+    name: Discover ${{ matrix.state }} in 44 categories
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - state: MA
+            bbox: '-73.55,41.15,-69.85,42.95'
+          - state: FL
+            bbox: '-87.7,24.35,-79.75,31.1'
+          - state: CT
+            bbox: '-73.75,40.9,-71.75,42.1'
+          - state: RI
+            bbox: '-71.95,41.05,-71.05,42.05'
+          - state: DE
+            bbox: '-75.85,38.4,-74.95,39.9'
+          - state: MD
+            bbox: '-79.55,37.85,-75.0,39.8'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install discovery dependencies
+        run: python -m pip install -r scripts/catalog/requirements.txt
+      - name: Discover website-bearing places across all source categories in the state
+        run: >-
+          python scripts/catalog/discover_overture.py
+          --state ${{ matrix.state }} --bbox=${{ matrix.bbox }}
+          --all-source-categories --limit 0
+          --output .catalog-work/candidates.jsonl
+      - name: Apply 44-category taxonomy and deduplicate source branches
+        run: |
+          python scripts/catalog/pipeline.py ingest .catalog-work/candidates.jsonl
+          python scripts/catalog/pipeline.py status
+      - name: Validate source states duplicate IDs repeated SQL imports and FTS
+        run: >-
+          python scripts/catalog/prepare_state_import.py
+          --db .catalog-work/queue.sqlite --state ${{ matrix.state }}
+          --out-dir .catalog-work/import-${{ matrix.state }}
+      - name: Report discovery separately from live publication
+        run: |
+          python - <<'PY'
+          import json,os,pathlib
+          folder=pathlib.Path('.catalog-work/import-${{ matrix.state }}')
+          report=json.loads((folder/'coverage.json').read_text())
+          summary={key:report[key] for key in ['state','state_name','unique_candidates','categories_requested','categories_with_candidates','missing_categories','live_imported']}
+          summary['publication']='Prepared SQL only. Live import requires the authorized Cloudflare connection and separate database-count verification.'
+          print(json.dumps(summary))
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
+              f.write(f"### {report['state_name']}\nCandidates: {report['unique_candidates']}\nCategories searched: 44\nCategories with candidates: {report['categories_with_candidates']}\nMissing categories: {', '.join(report['missing_categories']) or 'none'}\nNo live database writes in this workflow.\n")
+          PY
+      - name: Preserve source checkpoint coverage reports and tested SQL
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: waytoknot-east-coast-${{ matrix.state }}
+          path: |
+            .catalog-work/candidates.metadata.json
+            .catalog-work/queue.sqlite
+            .catalog-work/import-${{ matrix.state }}/
+          retention-days: 30
+          if-no-files-found: error

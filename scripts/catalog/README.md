@@ -46,7 +46,17 @@ The existing `lib/vendors.json` seed was manually researched from official busin
 
 The category taxonomy lives in `public/assets/wedding-categories.json`. Add category mappings deliberately, not by treating every clothing shop as a tuxedo specialist or every camera shop as a wedding photographer.
 
-## Vermont, Maine and New Hampshire
+## State discovery and import packages
+
+The importer supports VT, ME, NH, MA, FL, CT, RI, DE and MD. The workflow
+`.github/workflows/discover-east-coast-vendors.yml` discovers Massachusetts,
+Florida, Connecticut, Rhode Island, Delaware and Maryland in separate jobs.
+It evaluates all 44 categories, saves the deduplicated queue and tested SQL,
+and performs no live database writes. Publication is a separate authorized
+Cloudflare D1 import with actual before/after counts and public search checks.
+Existing rows are preserved on uniqueness conflicts, and new source candidates
+keep an explicit unverified label. Do not equate discovery totals with net new
+live listings, or metadata discovery with fetching every business website.
 
 `.github/workflows/discover-new-england-vendors.yml` runs one bounded discovery for
 each of VT, ME and NH. It reads every source category in the state (with a website),
