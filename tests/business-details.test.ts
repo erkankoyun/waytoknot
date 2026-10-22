@@ -8,9 +8,14 @@ test('business enrichment uses only published details for the matching location'
  assert.equal(details.detailsSource,'https://example.com/albany');
 });
 test('enrichment never invents hours and restricts URL protocols, credentials and local targets',()=>{
- const d=extractBusinessDetails('<meta content="/photo.jpg?a=1&amp;b=2" property="og:image"><meta property="og:image"><script type="application/ld+json">broken</script>','https://example.com/','Albany','Shop');
+ const d=extractBusinessDetails('<h1>Shop</h1><meta content="/photo.jpg?a=1&amp;b=2" property="og:image"><meta property="og:image"><script type="application/ld+json">broken</script>','https://example.com/','Albany','Shop');
  assert.deepEqual(d.images,['https://example.com/photo.jpg?a=1&b=2']);assert.equal(d.openingHours,undefined);
  for(const url of ['https://127.0.0.1/','https://localhost/','https://host.local/','https://user:password@example.com/','https://example.com:8080/','http://example.com/','https://[::1]/'])assert.equal(publicBusinessUrl(url),null,url);
+});
+test('matching business photos exclude logos, tracking pixels and unrelated pages',()=>{
+ const html='<h1>Albany Shop</h1><meta property="og:image" content="/logo_white.png"><img src="/favicon.png"><img src="/bakery.jpg" width="800" height="600"><img src="/pixel.jpg" width="1" height="1"><img data-src="/interior.jpg" src="data:image/png;base64,AA=="><img src="/mark.png" alt="Company logo">';
+ assert.deepEqual(extractBusinessDetails(html,'https://example.com/','Albany','Albany Shop').images,['https://example.com/bakery.jpg','https://example.com/interior.jpg']);
+ assert.equal(extractBusinessDetails('<h1>Other business</h1><meta property="og:image" content="/wrong.jpg"><img src="/wrong.jpg">','https://example.com/','Albany','Albany Shop').images,undefined);
 });
 test('same-city unrelated businesses and other branches do not supply phone or hours',()=>{
  const nodes=[{name:'Other Shop',address:{addressLocality:'Albany'},telephone:'5185551000',openingHours:'Mo 01:00-02:00'},{name:'Our Shop',address:{addressLocality:'Boston'},telephone:'6175551000',openingHours:'Mo 03:00-04:00'}];

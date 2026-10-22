@@ -15,6 +15,7 @@ const normal=(s:unknown)=>typeof s==='string'?s.normalize('NFD').replace(/[\u030
 const street=(s:unknown)=>normal(s).replace(/\b(street|road|avenue|boulevard|drive|suite)\b/g,v=>({street:'st',road:'rd',avenue:'ave',boulevard:'blvd',drive:'dr',suite:'ste'}[v]!));
 function nodes(value:unknown):Record<string,unknown>[]{if(Array.isArray(value))return value.flatMap(nodes);if(!value||typeof value!=='object')return [];const n=value as Record<string,unknown>;return [n,...nodes(n['@graph'])];}
 function pictures(value:unknown):string[]{if(typeof value==='string')return [value];if(Array.isArray(value))return value.flatMap(pictures);if(value&&typeof value==='object'){const n=value as Record<string,unknown>;return pictures(n.contentUrl||n.url);}return [];}
+function photo(value:string,base:string){const url=publicBusinessUrl(decode(value),base);if(!url)return null;const path=new URL(url).pathname;return /(?:^|[\/_-])(?:logos?|favicon|apple-touch-icon|android-chrome|tracking|pixel)(?:[\/_\.=-]|$)|\.(?:svg|ico)$/i.test(path)?null:url;}
 export function extractBusinessDetails(html:string,url:string,city:string,name:string,expectedStreet=''):BusinessDetails{
  const images:string[]=[],hours:string[]=[],phones=new Set<string>(),addresses=new Map<string,{streetAddress:string;address:string;postalCode?:string}>();let conflictingBranch=false,matched=false;
  for(const match of html.matchAll(/<script\b[^>]*type\s*=\s*["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script\s*>/gi)){
@@ -38,12 +39,19 @@ export function extractBusinessDetails(html:string,url:string,city:string,name:s
   }
  }
  if(!conflictingBranch){
+  const visible=html.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi,' ').replace(/<[^>]*>/g,' ');
+  const nameWords=normal(name).split(' ').filter(w=>w.length>2);const pageMatches=matched||nameWords.length>0&&nameWords.every(w=>normal(visible).includes(w));
+  if(pageMatches){
   for(const match of html.matchAll(/<meta\b[^>]*>/gi)){
    const attrs=Object.fromEntries([...match[0].matchAll(/([\w:-]+)\s*=\s*(?:"([^"]*)"|'([^']*)')/g)].map(m=>[m[1].toLowerCase(),decode(m[2]??m[3])]));
    if(attrs.content&&['og:image','twitter:image'].includes(attrs.property||attrs.name))images.push(attrs.content);
   }
-  const visible=html.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi,' ').replace(/<[^>]*>/g,' ');
-  const nameWords=normal(name).split(' ').filter(w=>w.length>2);const pageMatches=matched||nameWords.length>0&&nameWords.every(w=>normal(visible).includes(w));
+  for(const match of html.matchAll(/<img\b[^>]*>/gi)){
+   const attrs=Object.fromEntries([...match[0].matchAll(/([\w:-]+)\s*=\s*(?:"([^"]*)"|'([^']*)')/g)].map(m=>[m[1].toLowerCase(),decode(m[2]??m[3])]));
+   if(/\b(?:logo|icon|payment|spinner|tracking)\b/i.test((attrs.alt||'')+' '+(attrs.class||''))||(attrs.width&&Number(attrs.width)<120)||(attrs.height&&Number(attrs.height)<80))continue;
+   const src=[attrs['data-src'],attrs.src].filter(Boolean).find(x=>photo(x,url));if(src)images.push(src);
+  }
+  }
   if(pageMatches&&!phones.size)for(const link of html.matchAll(/href\s*=\s*["']tel:([^"']+)["']/gi)){const tel=businessPhone(decode(link[1]));if(tel)phones.add(tel);}
   if(pageMatches&&!hours.length){
    const day='(?:Mon(?:day)?|Tue(?:sday)?|Wed(?:nesday)?|Thu(?:rsday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?)';
@@ -52,6 +60,6 @@ export function extractBusinessDetails(html:string,url:string,city:string,name:s
    for(const match of visible.matchAll(pattern))hours.push(decode(match[0]).replace(/\s+/g,' ').trim());
   }
  }
- const clean=[...new Set(images.map(x=>publicBusinessUrl(decode(x),url)).filter((x):x is string=>!!x))].slice(0,12);
+ const clean=[...new Set(images.map(x=>photo(x,url)).filter((x):x is string=>!!x))].slice(0,12);
  return {...(clean.length?{images:clean}:{}),...(hours.length?{openingHours:[...new Set(hours)].slice(0,14)}:{}),...(phones.size===1?{phone:[...phones][0]}:{}),...(addresses.size===1?[...addresses.values()][0]:{}),detailsSource:url,detailsCheckedAt:new Date().toISOString().slice(0,10)};
 }
