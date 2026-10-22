@@ -1,7 +1,7 @@
 name: Prepare verified-source map contact and location patches
 on:
   push:
-    paths: ['.github/workflows/enrich-map-contact-locations.yml']
+    paths: ['.github/workflows/enrich-map-contact-locations.yml', 'scripts/catalog/enrich_overture_locations.py']
   workflow_dispatch:
 permissions:
   contents: read
