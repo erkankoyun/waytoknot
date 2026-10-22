@@ -36,9 +36,9 @@ export async function mapDirectoryView(db:D1Database, options:MapOptions, listOn
   const page=rows.results.slice(0,MAP_PAGE_SIZE);
   const results=page.map(row=>{const v=JSON.parse(row.payload) as Vendor;return {id:v.id,name:v.name,category:v.category,city:v.city,state:v.state,coords:v.coords};});
   const next_cursor=rows.results.length>MAP_PAGE_SIZE?String(page[page.length-1].cursor_id):null;
-  if(listOnly)return {mode:'list',results,next_cursor};
+  if(listOnly)return {mode:'list' as const,results,next_cursor};
   const clusters=await db.prepare('SELECT CAST((CAST(d.longitude AS REAL)+180)/? AS INTEGER) x,CAST((CAST(d.latitude AS REAL)+90)/? AS INTEGER) y,COUNT(*) n,MIN(d.id) id,AVG(CAST(d.latitude AS REAL)) latitude,AVG(CAST(d.longitude AS REAL)) longitude,MIN(CAST(d.longitude AS REAL)) west,MIN(CAST(d.latitude AS REAL)) south,MAX(CAST(d.longitude AS REAL)) east,MAX(CAST(d.latitude AS REAL)) north'+from+' GROUP BY x,y').bind(step,step,...args).all<{x:number;y:number;n:number;id:string;latitude:number;longitude:number;west:number;south:number;east:number;north:number}>();
-  return {mode:'viewport',results,next_cursor,total:clusters.results.reduce((n,c)=>n+c.n,0),clusters:clusters.results.map(c=>({key:c.x+':'+c.y,count:c.n,id:c.n===1?c.id:undefined,coords:[c.latitude,c.longitude],bounds:[c.west,c.south,c.east,c.north]})),category_labels:categoryLabels,bounds,corrected_query:p.correctedQuery};
+  return {mode:'viewport' as const,results,next_cursor,total:clusters.results.reduce((n,c)=>n+c.n,0),clusters:clusters.results.map(c=>({key:c.x+':'+c.y,count:c.n,id:c.n===1?c.id:undefined,coords:[c.latitude,c.longitude],bounds:[c.west,c.south,c.east,c.north]})),category_labels:categoryLabels,bounds,corrected_query:p.correctedQuery};
 }
 export async function mapVendor(db:D1Database,id:string){
   if(!id || id.length>200)throw Error('Invalid business');

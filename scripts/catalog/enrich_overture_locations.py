@@ -28,13 +28,16 @@ def main():
     import duckdb
     with urllib.request.urlopen('https://stac.overturemaps.org/catalog.json',timeout=25) as r:release=json.load(r)['latest']
     if not re.fullmatch(r'\d{4}-\d{2}-\d{2}\.\d+',release):raise ValueError('Invalid release')
-    db=duckdb.connect();db.execute('INSTALL httpfs');db.execute('LOAD httpfs');db.execute("SET s3_region='us-west-2'");db.execute("SET memory_limit='1GB'");db.execute('SET threads=4')
+    db=duckdb.connect();db.execute('INSTALL httpfs');db.execute('LOAD httpfs');db.execute('INSTALL spatial');db.execute('LOAD spatial');db.execute("SET s3_region='us-west-2'");db.execute("SET memory_limit='1GB'");db.execute('SET threads=4')
     path=f's3://overturemaps-us-west-2/release/{release}/theme=places/type=place/*'
     pattern='barber|hair|beauty|nail|jewel|baker|dessert|chocolate|gift|florist|flower|wedding|bridal|formal|photograph|photo_booth|video|cater|dj|tuxedo|event|limo|party|hotel|lodging|travel_agent|travel_agency|dance|security|clean|spa|massage|tailor|alteration|shoe|musician|rental|printing|stationery|sign|balloon|transport|child_care|pet_care|food_truck|bar_service|bartend|officiant|officiating|clothing|pet_sit|calligraphy|mobile_bar|disc_jockey|live_music'
-    query="""SELECT id,names.primary AS name,websites[1] AS website,phones[1] AS phone,addresses[1].freeform AS street,addresses[1].locality AS city,addresses[1].postcode AS postcode,addresses[1].region AS state,hex(geometry) AS geometry,operating_status FROM read_parquet(?) WHERE addresses[1].country='US' AND upper(addresses[1].region) IN (?,?) AND websites[1] IS NOT NULL AND names.primary IS NOT NULL AND addresses[1].locality IS NOT NULL AND regexp_matches(lower(coalesce(taxonomy.primary,'')),?)"""
+    query="""SELECT id,names.primary AS name,websites[1] AS website,phones[1] AS phone,addresses[1].freeform AS street,addresses[1].locality AS city,addresses[1].postcode AS postcode,addresses[1].region AS state,hex(ST_AsWKB(geometry)) AS geometry,operating_status FROM read_parquet(?) WHERE addresses[1].country='US' AND upper(addresses[1].region) IN (?,?) AND websites[1] IS NOT NULL AND names.primary IS NOT NULL AND addresses[1].locality IS NOT NULL AND regexp_matches(lower(coalesce(taxonomy.primary,'')),?)"""
     query=query.replace('operating_status FROM','operating_status,taxonomy.primary AS source_category FROM')
     query=query.replace(" AND regexp_matches(lower(coalesce(taxonomy.primary,'')),?)",'')
-    db.execute(query,[path,args.state,'US-'+args.state]);args.output.parent.mkdir(parents=True,exist_ok=True)
+    boxes={'NY': [-79.8, 40.45, -71.75, 45.1], 'PA': [-80.6, 39.65, -74.6, 42.55], 'VT': [-73.5, 42.7, -71.4, 45.1], 'ME': [-71.2, 42.9, -66.8, 47.6], 'NH': [-72.6, 42.65, -70.55, 45.35], 'MA': [-73.55, 41.15, -69.85, 42.95], 'FL': [-87.7, 24.35, -79.75, 31.1], 'CT': [-73.75, 40.9, -71.75, 42.1], 'RI': [-71.95, 41.05, -71.05, 42.05], 'DE': [-75.85, 38.4, -74.95, 39.9], 'MD': [-79.55, 37.85, -75, 39.8], 'DC': [-77.13, 38.78, -76.9, 39], 'WV': [-82.65, 37.15, -77.7, 40.7], 'VA': [-83.75, 36.5, -75.15, 39.5], 'NC': [-84.4, 33.8, -75.35, 36.65], 'SC': [-83.4, 32, -78.45, 35.25], 'MI': [-90.5, 41.65, -82, 48.35], 'OH': [-84.9, 38.35, -80.4, 42], 'IN': [-88.15, 37.7, -84.75, 41.85], 'KY': [-89.65, 36.45, -81.9, 39.2], 'GA': [-85.65, 30.3, -80.8, 35.05], 'AL': [-88.5, 30.1, -84.85, 35.05], 'TN': [-90.35, 34.95, -81.6, 36.75]}
+    west,south,east,north=boxes[args.state]
+    query+=' AND bbox.xmin BETWEEN ? AND ? AND bbox.ymin BETWEEN ? AND ?'
+    db.execute(query,[path,args.state,'US-'+args.state,west,east,south,north]);args.output.parent.mkdir(parents=True,exist_ok=True)
     counts={'state':args.state,'release':release,'patches':0,'with_phone':0,'with_street':0,'invalid_geometry':0,'permanently_closed':0,'live_updated':False}
     now=datetime.datetime.now(datetime.timezone.utc).isoformat()
     with args.output.open('w') as out:
@@ -55,3 +58,4 @@ def main():
     args.output.with_suffix('.report.json').write_text(json.dumps(counts,indent=2)+'\n');print(json.dumps(counts))
 
 if __name__=='__main__':main()
+
