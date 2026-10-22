@@ -30,7 +30,7 @@ export async function mapDirectoryView(db:D1Database, options:MapOptions, listOn
   const words=p.terms.filter(t=>!Object.hasOwn(categoryLabels,t));
   const join=words.length?' JOIN directory_fts ON directory_fts.rowid=d.rowid':'';
   if(words.length){where.push('directory_fts MATCH ?');args.push(words.map(w=>'"'+w.replace(/[^a-z0-9 ]/g,'')+'"*').join(' AND '));}
-  const from=' FROM directory_records d'+(words.length?'':' INDEXED BY directory_map_geo')+join+' WHERE '+where.join(' AND ');
+  const from=' FROM directory_records d'+(words.length?'':' INDEXED BY directory_map_geo_v2')+join+' WHERE '+where.join(' AND ');
   // Select only 81 IDs before reading payloads. Cluster queries never read business payloads.
   const rows=await db.prepare('SELECT rowid AS cursor_id,payload FROM directory_records WHERE rowid IN (SELECT d.rowid'+from+' AND d.rowid>? ORDER BY d.rowid LIMIT ?) ORDER BY rowid').bind(...args,cursor,MAP_PAGE_SIZE+1).all<{cursor_id:number;payload:string}>();
   const page=rows.results.slice(0,MAP_PAGE_SIZE);
