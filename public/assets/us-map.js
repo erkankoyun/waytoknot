@@ -109,7 +109,7 @@ function init(){
    let data=cache.get(key);if(!data){const response=await fetch('/api/map?'+key,{signal});if(!response.ok)throw Error('Map request failed');data=await response.json();if(!Array.isArray(data.results))throw Error('Invalid map response');cache.set(key,data);if(cache.size>12)cache.delete(cache.keys().next().value);}
    if(ticket!==sequence)return;
    if(append){const ids=new Set(vendors.map(v=>v.id));vendors.push(...data.results.filter(v=>!ids.has(v.id)));}
-   else{vendors=data.results;clusters=data.clusters||[];total=data.total||0;labels=data.category_labels||labels;categories();refreshPins();}
+   else{vendors=data.results;clusters=data.clusters||[];total=data.total||0;labels=data.category_labels||labels;categories();refreshPins();if(selected)$('gelincicegi-detailType').textContent=labels[selected.category]||selected.category;}
    cursor=data.next_cursor||'';status.textContent='';
    if(search&&map&&clusters.length){const points=clusters.flatMap(c=>[[c.bounds[1],c.bounds[0]],[c.bounds[3],c.bounds[2]]]);map.fitBounds(points,{padding:[60,60],maxZoom:14});}
   }catch(error){if(ticket!==sequence)return;failed=true;status.textContent='Vendor search could not load. Please retry.';}

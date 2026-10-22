@@ -17,6 +17,10 @@ test('matching business photos exclude logos, tracking pixels and unrelated page
  assert.deepEqual(extractBusinessDetails(html,'https://example.com/','Albany','Albany Shop').images,['https://example.com/bakery.jpg','https://example.com/interior.jpg']);
  assert.equal(extractBusinessDetails('<h1>Other business</h1><meta property="og:image" content="/wrong.jpg"><img src="/wrong.jpg">','https://example.com/','Albany','Albany Shop').images,undefined);
 });
+test('official-domain brand photos tolerate a catalog suffix while contacts remain branch matched',()=>{
+ const d=extractBusinessDetails('<h1>123Dough</h1><img src="/bread.jpg"><a href="tel:2125551234">Call</a><p>Monday: 9 AM - 5 PM</p>','https://123dough.com/','Pound Ridge','123dough Bakery');
+ assert.deepEqual(d.images,['https://123dough.com/bread.jpg']);assert.equal(d.phone,undefined);assert.equal(d.openingHours,undefined);
+});
 test('same-city unrelated businesses and other branches do not supply phone or hours',()=>{
  const nodes=[{name:'Other Shop',address:{addressLocality:'Albany'},telephone:'5185551000',openingHours:'Mo 01:00-02:00'},{name:'Our Shop',address:{addressLocality:'Boston'},telephone:'6175551000',openingHours:'Mo 03:00-04:00'}];
  const details=extractBusinessDetails('<script type="application/ld+json">'+JSON.stringify(nodes)+'</script>','https://example.com/albany','Albany','Our Shop');assert.equal(details.phone,undefined);assert.equal(details.openingHours,undefined);

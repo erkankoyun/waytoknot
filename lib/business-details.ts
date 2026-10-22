@@ -41,7 +41,11 @@ export function extractBusinessDetails(html:string,url:string,city:string,name:s
  if(!conflictingBranch){
   const visible=html.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi,' ').replace(/<[^>]*>/g,' ');
   const nameWords=normal(name).split(' ').filter(w=>w.length>2);const pageMatches=matched||nameWords.length>0&&nameWords.every(w=>normal(visible).includes(w));
-  if(pageMatches){
+  // Brand photos can omit a catalog suffix such as "Bakery". Contacts and hours
+  // still require the stricter business/branch match below.
+  const host=new URL(url).hostname.toLowerCase().replace(/^www\./,'').split('.')[0];
+  const photoMatches=pageMatches||nameWords.some(w=>w.length>=4&&host.includes(w)&&normal(visible).includes(w));
+  if(photoMatches){
   for(const match of html.matchAll(/<meta\b[^>]*>/gi)){
    const attrs=Object.fromEntries([...match[0].matchAll(/([\w:-]+)\s*=\s*(?:"([^"]*)"|'([^']*)')/g)].map(m=>[m[1].toLowerCase(),decode(m[2]??m[3])]));
    if(attrs.content&&['og:image','twitter:image'].includes(attrs.property||attrs.name))images.push(attrs.content);
