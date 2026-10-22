@@ -4,7 +4,7 @@ export type Vendor = {
   id: string; name: string; category: string; city: string; state: string;
   url: string; description: string; keywords: string[]; coords: number[];
   images?: string[]; openingHours?: string[]; detailsSource?: string; detailsCheckedAt?: string;
-  phone?: string; address?: string; streetAddress?: string; postalCode?: string;
+  phone?: string; phoneSource?: string; address?: string; streetAddress?: string; postalCode?: string; operatingStatus?: string;
   locationAccuracy?: string; locationSource?: string; locationCheckedAt?: string;
   source: string; checkedAt: string; tags?: string[]; locationKind?: string;
 };

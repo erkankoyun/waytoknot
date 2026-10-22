@@ -17,5 +17,5 @@ test('crawler follows one official contact link and saves only matching publishe
   if(url.endsWith('/contact'))return new Response('<h1>Test Salon</h1><a href="tel:5185551234">Call</a><p>Monday: 9 AM - 5 PM</p>',{headers:{'Content-Type':'text/html'}});
   return new Response('<h1>Test Salon</h1><meta property="og:image" content="https://example.org/salon.jpg"><a href="/contact">Contact</a>',{headers:{'Content-Type':'text/html'}});
  }) as typeof fetch;
- try{const result=await crawlBusiness(business);assert.equal(result.phone,'+15185551234');assert.deepEqual(result.images,['https://example.org/salon.jpg']);assert.deepEqual(result.openingHours,['Monday: 9 AM - 5 PM']);assert.equal(calls.length,3);}finally{globalThis.fetch=original;}
+ try{const result=await crawlBusiness(business);assert.equal(result.phone,'+15185551234');assert.equal(result.phoneSource,'https://example.org/contact');assert.deepEqual(result.images,['https://example.org/salon.jpg']);assert.deepEqual(result.openingHours,['Monday: 9 AM - 5 PM']);assert.equal(calls.length,3);}finally{globalThis.fetch=original;}
 });

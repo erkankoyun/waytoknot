@@ -1,4 +1,4 @@
-export type BusinessDetails={images?:string[];openingHours?:string[];phone?:string;address?:string;streetAddress?:string;postalCode?:string;detailsSource?:string;detailsCheckedAt?:string};
+export type BusinessDetails={images?:string[];openingHours?:string[];phone?:string;phoneSource?:string;address?:string;streetAddress?:string;postalCode?:string;detailsSource?:string;detailsCheckedAt?:string};
 export function publicBusinessUrl(value:unknown,base?:string){
  if(typeof value!=='string'||!value.trim())return null;
  try{const u=new URL(value,base);if(u.protocol!=='https:'||u.username||u.password||u.port&&u.port!=='443'||!u.hostname.includes('.')||u.hostname.includes(':')||/^(?:[0-9.]+|.*\.local|.*\.localhost|.*\.internal|localhost)$/.test(u.hostname))return null;return u.href;}catch{return null;}

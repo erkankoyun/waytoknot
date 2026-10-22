@@ -35,14 +35,14 @@ export async function crawlBusiness(v:Vendor,session=crawlSession()):Promise<Bus
   if(/^crawl-delay\s*:\s*[1-9]/im.test(robots.text))throw Error('crawl_delay_requires_review');
   const first=await read(url,900000);if(first.notFound)throw Error('website_not_found');
   const found=extractBusinessDetails(first.text,first.url,v.city,v.name,v.streetAddress||'');
-  if(!found.openingHours?.length||!found.phone){
+  if(!found.openingHours?.length||(!found.phone&&!v.phone)){
    for(const match of first.text.matchAll(/<a\b[^>]*href\s*=\s*["']([^"'#]+)["'][^>]*>([\s\S]*?)<\/a>/gi)){
     if(!/\b(contact|hours|visit|location)\b/i.test(match[2].replace(/<[^>]*>/g,' ')))continue;
     const next=publicBusinessUrl(match[1],first.url);if(!next||next===first.url||new URL(next).hostname.replace(/^www\./,'')!==domain||!robotsAllowed(robots.text,new URL(next).pathname))continue;
-    try{const second=await read(next,900000);const extra=extractBusinessDetails(second.text,second.url,v.city,v.name,v.streetAddress||'');if(!found.phone&&extra.phone)found.phone=extra.phone;if(!found.openingHours?.length&&extra.openingHours?.length)found.openingHours=extra.openingHours;if(!found.images?.length&&extra.images?.length)found.images=extra.images;}catch{/* Keep the published homepage data when the contact page is unavailable. */}
+    try{const second=await read(next,900000);const extra=extractBusinessDetails(second.text,second.url,v.city,v.name,v.streetAddress||'');if(!found.phone&&extra.phone){found.phone=extra.phone;found.phoneSource=second.url;}if(!found.openingHours?.length&&extra.openingHours?.length)found.openingHours=extra.openingHours;if(!found.images?.length&&extra.images?.length)found.images=extra.images;}catch{/* Keep the published homepage data when the contact page is unavailable. */}
     break;
    }
   }
-  return {...found,detailsCheckState:found.images?.length||found.openingHours?.length||found.phone?'found':'not_published'};
+  return {...found,...(found.phone?{phoneSource:found.phoneSource||first.url}:{}),detailsCheckState:found.images?.length||found.openingHours?.length||found.phone?'found':'not_published'};
  }catch(error){return {...stamp,detailsCheckState:'unavailable',detailsCheckReason:error instanceof Error?error.message:'website_unavailable'};}
 }

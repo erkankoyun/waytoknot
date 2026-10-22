@@ -21,7 +21,7 @@ function init(){
   $('gelincicegi-detailPhone').textContent=v.phone||'Phone not provided';$('gelincicegi-detailDescription').textContent=v.description||'';
   const hours=$('gelincicegi-detailHours');hours.replaceChildren();
   const lines=Array.isArray(v.openingHours)?v.openingHours.filter(x=>typeof x==='string').slice(0,14):[];
-  $('gelincicegi-detailStatus').textContent=lines.length?'Published business hours':'Hours not provided by this business';
+  $('gelincicegi-detailStatus').textContent=v.operatingStatus==='permanently_closed'?'Listed as permanently closed by the data source':lines.length?'Published business hours':'Hours not provided by this business';
   for(const line of lines)hours.append(el('div','wk-hours-line',line));
   if(lines.length){hours.append(el('p','wk-details-note','Local business time. Holiday hours and appointments may differ.'));}
   const source=safeUrl(v.detailsSource);if(source){const a=el('a','wk-details-source','Official website · photos and business details');a.href=source;a.target='_blank';a.rel='noopener noreferrer';hours.append(a);if(v.detailsCheckedAt)hours.append(el('p','wk-details-note','Last checked: '+v.detailsCheckedAt));}
@@ -35,17 +35,18 @@ function init(){
   if(map&&valid(v)){map.flyTo(v.coords,11);map.once('moveend',()=>map.panBy([innerWidth>768?220:0,innerWidth<=768?-host.clientHeight*.24:0],{animate:false}));}
   if(focus)$('gelincicegi-closeDetailBtn').focus();
   if(!v.detailsCheckedAt||Date.now()-Date.parse(v.detailsCheckedAt)>7*86400000){
-   $('gelincicegi-detailStatus').textContent='Checking published business details…';
+   $('gelincicegi-detailStatus').textContent=v.operatingStatus==='permanently_closed'?'Listed as permanently closed by the data source':'Checking published business details…';
    fetch('/api/vendor-details?id='+encodeURIComponent(v.id)).then(async r=>{if(!r.ok)throw Error();return r.json();}).then(data=>{
     Object.assign(v,data);if(selected?.id!==v.id)return;
-    $('gelincicegi-detailStatus').textContent=v.openingHours?.length?'Published business hours':'Hours not provided by this business';
+    $('gelincicegi-detailStatus').textContent=v.operatingStatus==='permanently_closed'?'Listed as permanently closed by the data source':v.openingHours?.length?'Published business hours':'Hours not provided by this business';
     hours.replaceChildren();for(const line of v.openingHours||[])hours.append(el('div','wk-hours-line',line));
     if(v.openingHours?.length)hours.append(el('p','wk-details-note','Local business time. Holiday hours and appointments may differ.'));
-    if(data.detailsSource){const link=el('a','wk-details-source','Source: official business website');link.href=data.detailsSource;link.target='_blank';link.rel='noopener noreferrer';hours.append(link);}
+    const detailsSource=safeUrl(data.detailsSource);if(detailsSource){const link=el('a','wk-details-source','Source: official business website');link.href=detailsSource;link.target='_blank';link.rel='noopener noreferrer';hours.append(link);}
     if(data.notice)hours.append(el('p','wk-details-note',data.notice));
+    $('gelincicegi-detailAddress').textContent=v.address||v.city+', '+v.state;
     $('gelincicegi-detailPhone').textContent=v.phone||'Phone not published';const tel=phoneLink(v.phone);$('gelincicegi-btnCall').disabled=!tel;$('gelincicegi-btnCall').onclick=()=>{if(tel)location.href='tel:'+tel;};
     renderGallery(v);
-   }).catch(()=>{if(selected?.id===v.id)$('gelincicegi-detailStatus').textContent=v.openingHours?.length?'Published business hours':'Hours unavailable · please check the official website';});
+   }).catch(()=>{if(selected?.id===v.id)$('gelincicegi-detailStatus').textContent=v.operatingStatus==='permanently_closed'?'Listed as permanently closed by the data source':v.openingHours?.length?'Published business hours':'Hours unavailable · please check the official website';});
   }
 
  }

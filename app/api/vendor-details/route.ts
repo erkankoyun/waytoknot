@@ -2,7 +2,7 @@ import {env} from 'cloudflare:workers';
 import {crawlBusiness} from '@/lib/business-crawl';
 import {digest,formRateLimit,formJson} from '@/lib/public-forms';
 import type {Vendor} from '@/lib/catalog';
-function details(v:Vendor){return {images:v.images,openingHours:v.openingHours,detailsSource:v.detailsSource,detailsCheckedAt:v.detailsCheckedAt,phone:v.phone,address:v.address,streetAddress:v.streetAddress,postalCode:v.postalCode};}
+function details(v:Vendor){return {images:v.images,openingHours:v.openingHours,detailsSource:v.detailsSource,detailsCheckedAt:v.detailsCheckedAt,phone:v.phone,phoneSource:v.phoneSource,address:v.address,streetAddress:v.streetAddress,postalCode:v.postalCode};}
 export async function GET(request:Request){
  const id=new URL(request.url).searchParams.get('id')||'';if(!id||id.length>200)return formJson({error:'A valid business is required.'},400);
  const db=(env as Cloudflare.Env).DB;if(!db)return formJson({error:'Live business details are unavailable.'},503);
