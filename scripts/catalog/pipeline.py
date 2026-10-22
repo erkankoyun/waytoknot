@@ -51,6 +51,11 @@ def category(source):
  return next((dest for pattern,dest in patterns if re.search(pattern,source)),None)
 
 def candidate(row):
+ name=row.get('name')
+ if not isinstance(name,str):return None
+ name=name.strip()
+ if not any(ch.isalnum() for ch in name):return None
+ row={**row,'name':name}
  if row.get('category') in CATEGORIES and row.get('url'):return row
  cat=category(row.get('source_category',''))
  if not cat or not row.get('website') or not row.get('city') or not row.get('state'):return None

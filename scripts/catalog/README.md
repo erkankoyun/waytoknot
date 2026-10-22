@@ -48,7 +48,11 @@ The category taxonomy lives in `public/assets/wedding-categories.json`. Add cate
 
 ## State discovery and import packages
 
-The importer supports VT, ME, NH, MA, FL, CT, RI, DE and MD. The workflow
+The importer supports VT, ME, NH, MA, FL, CT, RI, DE, MD, DC, WV, VA, NC, SC,
+MI, OH, IN, KY, GA, AL and TN. The twelve-region workflow
+`.github/workflows/discover-southeast-midwest-vendors.yml` evaluates Washington, D.C.
+and the requested eleven states independently. Business names are trimmed and
+records without letters or numbers are rejected before packaging. The workflow
 `.github/workflows/discover-east-coast-vendors.yml` discovers Massachusetts,
 Florida, Connecticut, Rhode Island, Delaware and Maryland in separate jobs.
 It evaluates all 44 categories, saves the deduplicated queue and tested SQL,

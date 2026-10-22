@@ -16,6 +16,10 @@ STATES = {
     'VT': 'Vermont', 'ME': 'Maine', 'NH': 'New Hampshire',
     'MA': 'Massachusetts', 'FL': 'Florida', 'CT': 'Connecticut',
     'RI': 'Rhode Island', 'DE': 'Delaware', 'MD': 'Maryland',
+    'DC': 'Washington, D.C.', 'WV': 'West Virginia', 'VA': 'Virginia',
+    'NC': 'North Carolina', 'SC': 'South Carolina', 'MI': 'Michigan',
+    'OH': 'Ohio', 'IN': 'Indiana', 'KY': 'Kentucky',
+    'GA': 'Georgia', 'AL': 'Alabama', 'TN': 'Tennessee',
 }
 
 
@@ -36,6 +40,9 @@ def prepare(db_path, state, out, batch_size=250):
         record = json.loads(payload)
         if record.get('state') != state or record.get('country', 'US') != 'US':
             raise ValueError(f'Unexpected state or country: {record.get("id")}')
+        name = record.get('name')
+        if not isinstance(name, str) or name != name.strip() or not any(ch.isalnum() for ch in name):
+            raise ValueError('Business name must be trimmed and contain letters or numbers')
         if record['category'] not in CATEGORIES or record['id'] in seen_ids:
             raise ValueError('Unknown category or repeated source ID')
         website = urllib.parse.urlsplit(record['url'])

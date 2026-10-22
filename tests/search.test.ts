@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {parseSearch,searchVendors as search,vendors} from '../lib/catalog';
 
 test('Expanded state names and abbreviations select state filters',()=>{
- for(const [name,code] of [['Vermont','VT'],['Maine','ME'],['New Hampshire','NH'],['Massachusetts','MA'],['Florida','FL'],['Connecticut','CT'],['Rhode Island','RI'],['Delaware','DE'],['Maryland','MD']]){
+ for(const [name,code] of [['Vermont','VT'],['Maine','ME'],['New Hampshire','NH'],['Massachusetts','MA'],['Florida','FL'],['Connecticut','CT'],['Rhode Island','RI'],['Delaware','DE'],['Maryland','MD'],['Washington, D.C.','DC'],['Washington DC','DC'],['District of Columbia','DC'],['West Virginia','WV'],['Virginia','VA'],['North Carolina','NC'],['South Carolina','SC'],['Michigan','MI'],['Ohio','OH'],['Indiana','IN'],['Kentucky','KY'],['Georgia','GA'],['Alabama','AL'],['Tennessee','TN']]){
   const query=parseSearch(`photographers in ${name}`);
   assert.equal(query.selectedState,code);
   assert.deepEqual(query.queryCategories,['photography']);
