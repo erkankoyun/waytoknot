@@ -1,7 +1,7 @@
 """Regression checks for source-name quality before unverified publication."""
 import unittest
 
-from pipeline import candidate
+from pipeline import candidate, category
 
 
 class SourceNameTests(unittest.TestCase):
@@ -28,6 +28,27 @@ class SourceNameTests(unittest.TestCase):
         self.assertEqual(candidate(self.row('Élan 婚礼'))['name'], 'Élan 婚礼')
         self.assertIsNone(candidate({'name': '.', 'category': 'photography',
                                      'url': 'https://example.org/'}))
+
+    def test_unrelated_source_categories_are_not_substring_matches(self):
+        for source in ('spanish_restaurant', 'coworking_space', 'makerspace',
+                       'newspaper_and_magazines_store', 'b2b_newspaper_advertising',
+                       'industrial_spares_and_products_wholesaler',
+                       'social_security_service', 'fingerprinting_service',
+                       'self_catering_accommodation', 'hotel_supply_service',
+                       'hotel_bar', 'hot_air_balloons_tour', 'balloon_port',
+                       'massage_school', 'bartending_school',
+                       'air_duct_cleaning_service', 'industrial_cleaning_service',
+                       '3d_printing_service'):
+            with self.subTest(source=source):
+                self.assertIsNone(category(source))
+        for source, expected in [('day_spa', 'spa'), ('medical_spa', 'spa'),
+                                 ('massage_therapy', 'spa'), ('caterer', 'catering'),
+                                 ('security_service', 'security'), ('hotel', 'hotel'),
+                                 ('printing_service', 'signage'),
+                                 ('screen_printing_service', 'signage'),
+                                 ('balloon_service', 'decor'), ('bartender', 'barservice')]:
+            with self.subTest(source=source):
+                self.assertEqual(category(source), expected)
 
 
 if __name__ == '__main__':
