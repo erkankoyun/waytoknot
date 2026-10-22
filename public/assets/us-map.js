@@ -50,7 +50,8 @@ function init(){
  }
  function renderGallery(v){
   const host=$('gelincicegi-detailImage');host.replaceChildren();host.classList.remove('map-detail-icon');
-  const photos=[...new Set((Array.isArray(v.images)?v.images:[]).filter(x=>{if(typeof x!=='string'||!safeUrl(x)||!/^https:/.test(x))return false;return !/(?:^|[\/_-])(?:logos?|favicon|apple-touch-icon|android-chrome|tracking|pixel)(?:[\/_\.=-]|$)|\.(?:svg|ico)$/.test(new URL(x).pathname.toLowerCase());}))].slice(0,12);
+  const photoRank=url=>Number(/\.(?:jpe?g|webp|avif)$/i.test(new URL(url).pathname));
+  const photos=[...new Set((Array.isArray(v.images)?v.images:[]).filter(x=>{if(typeof x!=='string'||!safeUrl(x)||!/^https:/.test(x)||/[{}]|%7[bd]/i.test(x))return false;return !/(?:^|[\/_-])(?:logos?|favicon|apple-touch-icon|android-chrome|tracking|pixel)(?:[\/_\.=-]|$)|\.(?:svg|ico)$/.test(new URL(x).pathname.toLowerCase());}))].sort((a,b)=>photoRank(b)-photoRank(a)).slice(0,12);
   if(!photos.length){host.classList.add('map-detail-icon');host.append(el('span','',v.name.slice(0,1)),el('small','wk-photo-empty','No published photo available'));return;}
   let index=0;const img=el('img','wk-business-photo');img.alt=v.name+' — photo from the official business website';img.referrerPolicy='no-referrer';img.decoding='async';
   const label=el('span','wk-photo-count');label.setAttribute('aria-live','polite');

@@ -15,7 +15,8 @@ const normal=(s:unknown)=>typeof s==='string'?s.normalize('NFD').replace(/[\u030
 const street=(s:unknown)=>normal(s).replace(/\b(street|road|avenue|boulevard|drive|suite)\b/g,v=>({street:'st',road:'rd',avenue:'ave',boulevard:'blvd',drive:'dr',suite:'ste'}[v]!));
 function nodes(value:unknown):Record<string,unknown>[]{if(Array.isArray(value))return value.flatMap(nodes);if(!value||typeof value!=='object')return [];const n=value as Record<string,unknown>;return [n,...nodes(n['@graph'])];}
 function pictures(value:unknown):string[]{if(typeof value==='string')return [value];if(Array.isArray(value))return value.flatMap(pictures);if(value&&typeof value==='object'){const n=value as Record<string,unknown>;return pictures(n.contentUrl||n.url);}return [];}
-function photo(value:string,base:string){const url=publicBusinessUrl(decode(value),base);if(!url)return null;const path=new URL(url).pathname;return /(?:^|[\/_-])(?:logos?|favicon|apple-touch-icon|android-chrome|tracking|pixel)(?:[\/_\.=-]|$)|\.(?:svg|ico)$/i.test(path)?null:url;}
+function photo(value:string,base:string){const url=publicBusinessUrl(decode(value),base);if(!url||/[{}]|%7[bd]/i.test(url))return null;const path=new URL(url).pathname;return /(?:^|[\/_-])(?:logos?|favicon|apple-touch-icon|android-chrome|tracking|pixel)(?:[\/_\.=-]|$)|\.(?:svg|ico)$/i.test(path)?null:url;}
+const photoRank=(url:string)=>Number(/\.(?:jpe?g|webp|avif)$/i.test(new URL(url).pathname));
 export function extractBusinessDetails(html:string,url:string,city:string,name:string,expectedStreet=''):BusinessDetails{
  const images:string[]=[],hours:string[]=[],phones=new Set<string>(),addresses=new Map<string,{streetAddress:string;address:string;postalCode?:string}>();let conflictingBranch=false,matched=false;
  for(const match of html.matchAll(/<script\b[^>]*type\s*=\s*["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script\s*>/gi)){
@@ -64,6 +65,6 @@ export function extractBusinessDetails(html:string,url:string,city:string,name:s
    for(const match of visible.matchAll(pattern))hours.push(decode(match[0]).replace(/\s+/g,' ').trim());
   }
  }
- const clean=[...new Set(images.map(x=>photo(x,url)).filter((x):x is string=>!!x))].slice(0,12);
+ const clean=[...new Set(images.map(x=>photo(x,url)).filter((x):x is string=>!!x))].sort((a,b)=>photoRank(b)-photoRank(a)).slice(0,12);
  return {...(clean.length?{images:clean}:{}),...(hours.length?{openingHours:[...new Set(hours)].slice(0,14)}:{}),...(phones.size===1?{phone:[...phones][0]}:{}),...(addresses.size===1?[...addresses.values()][0]:{}),detailsSource:url,detailsCheckedAt:new Date().toISOString().slice(0,10)};
 }
