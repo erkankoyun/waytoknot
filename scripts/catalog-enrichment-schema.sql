@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS catalog_enrichment_jobs(id TEXT PRIMARY KEY,cursor INTEGER NOT NULL DEFAULT 0,processed INTEGER NOT NULL DEFAULT 0,with_images INTEGER NOT NULL DEFAULT 0,with_hours INTEGER NOT NULL DEFAULT 0,with_phone INTEGER NOT NULL DEFAULT 0,lease_until INTEGER NOT NULL DEFAULT 0,started_at TEXT NOT NULL,updated_at TEXT,completed_at TEXT);
+INSERT OR IGNORE INTO catalog_enrichment_jobs(id,started_at) VALUES('business-details-v1',strftime('%Y-%m-%dT%H:%M:%SZ','now'));
+-- Contact/photo refreshes do not change searchable text. Avoid rebuilding FTS on every JSON patch.
+DROP TRIGGER IF EXISTS directory_fts_update;
+CREATE TRIGGER directory_fts_update AFTER UPDATE OF name,city,search_text ON directory_records WHEN old.name IS NOT new.name OR old.city IS NOT new.city OR old.search_text IS NOT new.search_text BEGIN INSERT INTO directory_fts(directory_fts,rowid,name,city,search_text) VALUES('delete',old.rowid,old.name,old.city,old.search_text); INSERT INTO directory_fts(rowid,name,city,search_text) VALUES(new.rowid,new.name,new.city,new.search_text); END;
